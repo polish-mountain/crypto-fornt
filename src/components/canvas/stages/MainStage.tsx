@@ -89,7 +89,12 @@ export default function MainStage({ title, setLoaded }: Props) {
         previewControlsActionContext.setPreviewControls('desktop')
       }}>
       {hosts.map((device, idx) => (
-        <DeviceModel variant='desktop' key={idx} animate={{ position: positions[idx] }} materials={DESKTOP_MATERIALS} />
+        <DeviceModel
+          variant={device.device_type || 'desktop'}
+          key={idx}
+          animate={{ position: positions[idx] }}
+          materials={DESKTOP_MATERIALS}
+        />
       ))}
     </motion.group>
   )
