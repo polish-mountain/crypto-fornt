@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
+
+  :root {
+    --scrollbar-size: 1rem;
+    --color-background: hsl(210deg, 25%, 5%);
+    --color-scrollbar: linear-gradient(0deg, #7f5af0, #647dee);
+    --color-scrollbar-hover: #7f5af0;
+  }
+
+  html::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    background: var(--color-background);
+  }
+
+  html::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar);
+    border-radius: 100vw;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background: var(--color-scrollbar-hover);
+    border-radius: 100vw;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  html,
+  body,
+  #__next {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer utilities {
+  .gradient {
+    @apply from-purple-secondary to-purple-primary;
+  }
+
+  .gradientFlashy {
+    @apply from-flashy-primary to-flashy-secondary;
+  }
+
+  .textGradient {
+    @apply text-transparent  bg-clip-text gradient;
+  }
+
+  .textGradientFlashy {
+    @apply text-transparent  bg-clip-text gradientFlashy;
+  }
+
+  .word-spacing {
+    word-spacing: 0.2rem;
+  }
+}
