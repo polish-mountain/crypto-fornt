@@ -12,7 +12,7 @@ export const PreviewControlsState = createContext(null)
 export const PreviewControlsAction = createContext(null)
 
 export function PreviewControls({ children }) {
-  const [previewControls, setPreviewControls] = useState<boolean>(false)
+  const [previewControls, setPreviewControls] = useState<StateProps>(null)
 
   return (
     <PreviewControlsAction.Provider value={setPreviewControls}>

@@ -43,7 +43,7 @@ export function Desktop({ isOpened, animate }: Props) {
         transition: { duration: 2 },
       }}
       initial={{ scale: isOpened ? 0.2 : 0.1 }}
-      whileHover={{ scale: isOpened ? 0.4 : 0.1 }}>
+      whileHover={{ scale: isOpened ? 0.3 : 0.1, z: 0.4 }}>
       <motion.primitive ref={ref} object={gltf.scene} />
     </motion.group>
   )
