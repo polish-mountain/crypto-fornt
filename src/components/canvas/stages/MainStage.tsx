@@ -26,6 +26,7 @@ export default function MainStage({ title, setLoaded }: Props) {
   const setClickedDevice = useContext(PreviewControlsAction)
 
   const isDesktopsClicked = clickedDevice === 'desktop'
+  console.log(isDesktopsClicked)
 
   useEffect(() => {
     setLoaded()
@@ -64,8 +65,8 @@ export default function MainStage({ title, setLoaded }: Props) {
     const tempY = camera.position.y
     const [defaultX] = cameraDefault
 
-    camera.position.x += (defaultX + -mouseX - tempX) * CAMERA_SPEED
-    camera.position.y += (cameraCenter.current.y - -(mouseY * 0.9) - tempY) * CAMERA_SPEED
+    camera.position.x += (defaultX + -mouseX * 0.4 - tempX) * CAMERA_SPEED
+    camera.position.y += (cameraCenter.current.y - -(mouseY * 0.45) - tempY) * CAMERA_SPEED
 
     camera.lookAt(0, 0, 0)
   })

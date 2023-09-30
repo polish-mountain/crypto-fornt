@@ -32,12 +32,21 @@ dependencies:
   glsl-random:
     specifier: ^0.0.5
     version: 0.0.5
+  install:
+    specifier: ^0.13.0
+    version: 0.13.0
+  lucide-react:
+    specifier: ^0.279.0
+    version: 0.279.0(react@18.2.0)
   next:
     specifier: ^13.1.6
     version: 13.5.3(@babel/core@7.23.0)(react-dom@18.2.0)(react@18.2.0)
   next-pwa:
     specifier: ^5.6.0
     version: 5.6.0(@babel/core@7.23.0)(next@13.5.3)(webpack@5.88.2)
+  pnpm:
+    specifier: ^8.8.0
+    version: 8.8.0
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -4555,6 +4564,11 @@ packages:
       through: 2.3.8
     dev: true
 
+  /install@0.13.0:
+    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
+    engines: {node: '>= 0.10'}
+    dev: false
+
   /internal-slot@1.0.5:
     resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}
     engines: {node: '>= 0.4'}
@@ -5050,6 +5064,14 @@ packages:
       yallist: 4.0.0
     dev: true
 
+  /lucide-react@0.279.0(react@18.2.0):
+    resolution: {integrity: sha512-LJ8g66+Bxc3t3x9vKTeK3wn3xucrOQGfJ9ou9GsBwCt2offsrT2BB90XrTrIzE1noYYDe2O8jZaRHi6sAHXNxw==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /maath@0.9.0(@types/three@0.156.0)(three@0.151.3):
     resolution: {integrity: sha512-aAR8hoUqPxlsU8VOxkS9y37jhUzdUxM017NpCuxFU1Gk+nMaZASZxymZrV8LRSHzRk/watlbfyNKu6XPUhCFrQ==}
     peerDependencies:
@@ -5508,6 +5530,12 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       find-up: 4.1.0
+    dev: false
+
+  /pnpm@8.8.0:
+    resolution: {integrity: sha512-eY5rMiZpzmPI2oVr1irR97bzb036oKwCWvK91wDQndXcqUPlytPtrF0bO668Syw/uA+7hTf5NnM8Mr4ux4BRRA==}
+    engines: {node: '>=16.14'}
+    hasBin: true
     dev: false
 
   /postcss-import@15.1.0(postcss@8.4.31):

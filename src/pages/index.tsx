@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { Back } from '@/components/dom/Back'
 
 // Dynamic import is used to prevent a payload when the website starts, that includes threejs, r3f etc..
 // WARNING ! errors might get obfuscated by using dynamic import.
@@ -25,7 +26,7 @@ export default function Page(props) {
     return () => clearTimeout(close)
   }, [])
 
-  return <></>
+  return <Back />
 }
 
 // Canvas components go here
