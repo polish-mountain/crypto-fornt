@@ -1,7 +1,7 @@
 // adds device to sphere
 
 import { BORDERS } from './global'
-import { DeviceObj, Device } from './types'
+import { DeviceObj } from './types'
 
 export function generateDeviceOnSphere(devices: DeviceObj[]): DeviceObj[] {
   return devices.map((device) => {

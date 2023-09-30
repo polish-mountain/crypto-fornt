@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
+import useWebSocket from 'react-use-websocket'
 import { Device } from './types'
 
 const ROOT_URL = 'https://cyber-api.alu.dog'
@@ -9,24 +10,13 @@ export async function getHosts(): Promise<Device[]> {
   return hosts
 }
 
-export function hostUpdateHook(callback: (d: Device) => void) {
-  const [ws, setWs] = React.useState<WebSocket | null>(null)
-  useEffect(() => {
-    let wsHost = ROOT_URL.replace('https://', 'wss://').replace('http://', 'ws://')
-    const ws = new WebSocket(wsHost + '/api/ws')
-    setWs(ws)
+export function hostUpdateHook() {
+  let socketUrl = ROOT_URL.replace('https://', 'wss://').replace('http://', 'ws://')
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl + '/api/ws')
+  if (lastMessage) {
+    const device: Device = JSON.parse(lastMessage.data)
+    return device
+  }
 
-    return () => {
-      ws.close()
-    }
-  }, [])
-
-  useEffect(() => {
-    if (ws) {
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data)
-        callback(data)
-      }
-    }
-  }, [ws, callback])
+  return null
 }

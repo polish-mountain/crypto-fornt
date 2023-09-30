@@ -1,13 +1,12 @@
+import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
+import useMouse from '@/hooks/useMouse'
+import { cameraDefault } from '@/utils/global'
+import { DeviceObj } from '@/utils/types'
+import { useFrame } from '@react-three/fiber'
+import { motion } from 'framer-motion-3d'
 import { useContext, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { DeviceModel } from '../DeviceModel'
-import useMouse from '@/hooks/useMouse'
-import { useFrame } from '@react-three/fiber'
-import { cameraDefault } from '@/utils/global'
-import { DeviceObj } from '@/utils/types'
-import { DEVICES_OBJ } from '@/mocks'
-import { motion } from 'framer-motion-3d'
-import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
 
 import { getHosts, hostUpdateHook } from '@/utils/api'
 import { generateDeviceOnSphere, transformPositionsToGrid } from '@/utils/layoutFuncs'
@@ -32,6 +31,7 @@ type Props = {
 
 export default function MainStage({ title, setLoaded }: Props) {
   let { mouseX, mouseY } = useMouse()
+
   const [deviceObjs, setDeviceObjs] = useState<DeviceObj[]>([])
   const clickedDevice = useContext(PreviewControlsStateContext)
   const previewControlsActionContext = useContext(PreviewControlsActionContext)
@@ -59,7 +59,10 @@ export default function MainStage({ title, setLoaded }: Props) {
   }, [])
 
   useEffect(() => {}, [isDesktopsClicked, deviceObjs])
-  hostUpdateHook((d) => {
+
+  const d = hostUpdateHook()
+  useEffect(() => {
+    if (!d) return
     let didExist = false
     let newDesktops = deviceObjs.map((desktop) => {
       if (desktop.device.ip === d.ip) {
@@ -68,8 +71,10 @@ export default function MainStage({ title, setLoaded }: Props) {
       }
       return desktop
     })
+    console.log('did exist:', didExist)
+    console.log('incuming, before', deviceObjs.length)
     if (!didExist) {
-      setDeviceObjs([
+      let dupa = [
         ...deviceObjs,
         layoutFunc([
           {
@@ -77,18 +82,22 @@ export default function MainStage({ title, setLoaded }: Props) {
             device: d,
           },
         ])[0],
-      ])
+      ]
+      console.log('dupa', dupa)
+      setDeviceObjs(dupa)
     } else {
       setDeviceObjs(newDesktops)
     }
-  })
+  }, [d])
+
+  // console.log('render', deviceObjs.length)
 
   useEffect(() => {
     setDeviceObjs(layoutFunc(deviceObjs))
-  }, [isDesktopsClicked, layoutFunc, deviceObjs])
+  }, [isDesktopsClicked, layoutFunc])
 
   const cameraCenter = useRef<{ y: number; z: number }>({ y: cameraDefault[1], z: cameraDefault[2] })
-
+  // console.log(deviceObjs.length)
   useFrame(({ camera }) => {
     const tempX = camera.position.x
     const tempY = camera.position.y
