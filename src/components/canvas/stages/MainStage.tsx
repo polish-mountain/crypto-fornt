@@ -6,11 +6,10 @@ import { useFrame } from '@react-three/fiber'
 import { cameraDefault } from '@/utils/global'
 import { DeviceObj } from '@/utils/types'
 import { DEVICES_OBJ } from '@/mocks'
-import { generateDeviceOnSphere } from '@/utils/addDevice'
 import { motion } from 'framer-motion-3d'
-import { transformPositionsToGrid } from '@/utils/transformPositionsToGrid'
 import { PreviewControlsAction, PreviewControlsState } from '@/contexts/previewControlls'
 import { getHosts, hostUpdateHook } from '@/utils/api'
+import { generateDeviceOnSphere, transformPositionsToGrid } from '@/utils/layoutFuncs'
 
 const CAMERA_SPEED = 0.08
 
@@ -26,22 +25,29 @@ export default function MainStage({ title, setLoaded }: Props) {
   const setClickedDevice = useContext(PreviewControlsAction)
 
   const isDesktopsClicked = clickedDevice === 'desktop'
-  console.log(isDesktopsClicked)
+
+  // const [layoutFunc, setLayoutFunc] = useState<(devices: DeviceObj[]) => DeviceObj[]>(generateDeviceOnSphere)
+
+  const layoutFunc = isDesktopsClicked ? transformPositionsToGrid : generateDeviceOnSphere
 
   useEffect(() => {
     setLoaded()
     getHosts().then((hosts) => {
-      setDesktops([...desktops, ...generateDeviceOnSphere(hosts)])
+      setDesktops([
+        ...desktops,
+        ...layoutFunc(
+          hosts.map((h) => {
+            return {
+              position: [0, 0, 0],
+              device: h,
+            }
+          }),
+        ),
+      ])
     })
   }, [])
 
-  useEffect(() => {
-    if (!isDesktopsClicked) {
-      // setDesktops(generateDeviceOnSphere(new Array(50).fill(DEVICES_OBJ[0].device)))
-    } else {
-      setDesktops((prev) => transformPositionsToGrid(prev))
-    }
-  }, [isDesktopsClicked])
+  useEffect(() => {}, [isDesktopsClicked, desktops])
   hostUpdateHook((d) => {
     let didExist = false
     let newDesktops = desktops.map((desktop) => {
@@ -52,11 +58,23 @@ export default function MainStage({ title, setLoaded }: Props) {
       return desktop
     })
     if (!didExist) {
-      setDesktops([...desktops, generateDeviceOnSphere([d])[0]])
+      setDesktops([
+        ...desktops,
+        layoutFunc([
+          {
+            position: [0, 0, 0],
+            device: d,
+          },
+        ])[0],
+      ])
     } else {
       setDesktops(newDesktops)
     }
   })
+
+  useEffect(() => {
+    setDesktops(layoutFunc(desktops))
+  }, [isDesktopsClicked, layoutFunc, desktops])
 
   const cameraCenter = useRef<{ y: number; z: number }>({ y: cameraDefault[1], z: cameraDefault[2] })
 
