@@ -15,6 +15,7 @@ export type Service = {
 export type DeviceObj = {
   device: Device
   position: [number, number, number]
+  spherePosition?: [number, number, number]
 }
 
 export type MaterialInput = {
