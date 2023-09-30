@@ -6,14 +6,16 @@ import { motion } from 'framer-motion-3d'
 import * as THREE from 'three'
 import { PreviewControlsStateContext } from '@/contexts/previewControlls'
 import { cameraDefault } from '@/utils/global'
+import { MaterialInput } from '@/utils/types'
 
 type Props = {
   animate: { position: [number, number, number] }
   variant: 'desktop' | 'laptop' | 'phone'
+  materials: MaterialInput[]
 }
 
-export function DeviceModel({ animate, variant }: Props) {
-  const gltf = useSkinnedMeshClone('/models/desktop.glb')
+export function DeviceModel({ animate, variant, materials }: Props) {
+  const gltf = useSkinnedMeshClone(`/models/${variant}.glb`)
   const [isCameraAnimating, setIsCameraAnimating] = useState(false)
   const { previewControls } = useContext(PreviewControlsStateContext)
   const isOpened = previewControls === variant
@@ -28,14 +30,9 @@ export function DeviceModel({ animate, variant }: Props) {
     if (ref.current) {
       ref.current.traverse((child) => {
         if (child.isMesh) {
-          switch (child.material.name) {
-            case 'Main_MAt':
-              child.material = new THREE.MeshNormalMaterial({ color: '#7F5AF0' })
-              break
-
-            case 'Display':
-              child.material = new THREE.MeshBasicMaterial({ color: '#86efac' })
-              break
+          const material = materials.find(({ name }) => name === child.material.name)
+          if (material) {
+            child.material = material.material
           }
         }
       })

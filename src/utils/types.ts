@@ -16,3 +16,8 @@ export type DeviceObj = {
   device: Device
   position: [number, number, number]
 }
+
+export type MaterialInput = {
+  name: string
+  material: THREE.Material
+}

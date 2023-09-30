@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { Desktop } from '../Desktop'
+import { DeviceModel } from '../DeviceModel'
 import useMouse from '@/hooks/useMouse'
 import { useFrame } from '@react-three/fiber'
 import { cameraDefault } from '@/utils/global'
@@ -10,6 +10,17 @@ import { generateDeviceOnSphere } from '@/utils/addDevice'
 import { motion } from 'framer-motion-3d'
 import { transformPositionsToGrid } from '@/utils/transformPositionsToGrid'
 import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
+
+const DESKTOP_MATERIALS = [
+  {
+    name: 'Main_MAt',
+    material: new THREE.MeshNormalMaterial({ color: '#7F5AF0' }),
+  },
+  {
+    name: 'Display',
+    material: new THREE.MeshBasicMaterial({ color: '#86efac' }),
+  },
+]
 
 const CAMERA_SPEED = 0.08
 
@@ -59,7 +70,7 @@ export default function MainStage({ title, setLoaded }: Props) {
         setPreviewControls('desktop')
       }}>
       {desktops.map(({ device, position }, idx) => (
-        <Desktop key={idx} animate={{ position: position }} isOpened={isDesktopsClicked} />
+        <DeviceModel variant='desktop' key={idx} animate={{ position: position }} materials={DESKTOP_MATERIALS} />
       ))}
     </motion.group>
   )
