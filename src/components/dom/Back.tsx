@@ -1,10 +1,10 @@
-import { PreviewControlsAction, PreviewControlsState } from '@/contexts/previewControlls'
+import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
 import { useContext, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 
 export function Back() {
-  const previewControls = useContext(PreviewControlsState)
-  const setPreviewControls = useContext(PreviewControlsAction)
+  const { previewControls } = useContext(PreviewControlsStateContext)
+  const { setPreviewControls } = useContext(PreviewControlsActionContext)
 
   return (
     <>

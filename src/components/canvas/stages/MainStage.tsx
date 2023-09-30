@@ -7,7 +7,8 @@ import { cameraDefault } from '@/utils/global'
 import { DeviceObj } from '@/utils/types'
 import { DEVICES_OBJ } from '@/mocks'
 import { motion } from 'framer-motion-3d'
-import { PreviewControlsAction, PreviewControlsState } from '@/contexts/previewControlls'
+import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
+
 import { getHosts, hostUpdateHook } from '@/utils/api'
 import { generateDeviceOnSphere, transformPositionsToGrid } from '@/utils/layoutFuncs'
 
@@ -21,10 +22,9 @@ type Props = {
 export default function MainStage({ title, setLoaded }: Props) {
   let { mouseX, mouseY } = useMouse()
   const [deviceObjs, setDeviceObjs] = useState<DeviceObj[]>([])
-  const clickedDevice = useContext(PreviewControlsState)
-  const setClickedDevice = useContext(PreviewControlsAction)
-
-  const isDesktopsClicked = clickedDevice === 'desktop'
+  const clickedDevice = useContext(PreviewControlsStateContext)
+  const previewControlsActionContext = useContext(PreviewControlsActionContext)
+  const isDesktopsClicked = clickedDevice.previewControls === 'desktop'
 
   // const [layoutFunc, setLayoutFunc] = useState<(devices: DeviceObj[]) => DeviceObj[]>(generateDeviceOnSphere)
 
@@ -94,10 +94,10 @@ export default function MainStage({ title, setLoaded }: Props) {
       whileHover={{ scale: isDesktopsClicked ? 1 : 1.1 }}
       onClick={(e) => {
         e.stopPropagation()
-        setClickedDevice('desktop')
+        previewControlsActionContext.setPreviewControls('desktop')
       }}>
       {deviceObjs.map(({ device, position }, idx) => (
-        <DeviceModel key={idx} animate={{ position: position }} isOpened={isDesktopsClicked} />
+        <DeviceModel key={idx} animate={{ position: position }} variant={clickedDevice.previewControls as any} />
       ))}
     </motion.group>
   )
