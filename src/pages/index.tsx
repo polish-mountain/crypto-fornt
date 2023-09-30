@@ -1,7 +1,7 @@
 import { Michroma } from 'next/font/google'
-import { AnimatePresence, motion } from 'framer-motion'
 import Scroll from '@/templates/Scroll'
 import dynamic from 'next/dynamic'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 

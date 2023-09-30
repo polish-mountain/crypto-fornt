@@ -1,4 +1,3 @@
-import { SKILLS } from '@/utils/global'
 import { createContext, useReducer, useState } from 'react'
 
 export const LastHoveredBallContext = createContext(null)
