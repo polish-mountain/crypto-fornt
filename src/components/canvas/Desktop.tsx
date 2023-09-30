@@ -11,7 +11,7 @@ type Props = {
   isOpened: boolean
   onClick?: () => void
 }
-export function Desktop({ isOpened, animate }: Props) {
+export function DeviceModel({ isOpened, animate }: Props) {
   const gltf = useSkinnedMeshClone('/models/desktop.glb')
   const ref = useRef<any>()
 

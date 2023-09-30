@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { Desktop } from '../Desktop'
+import { DeviceModel } from '../Desktop'
 import useMouse from '@/hooks/useMouse'
 import { useFrame } from '@react-three/fiber'
 import { cameraDefault } from '@/utils/global'
@@ -20,7 +20,7 @@ type Props = {
 
 export default function MainStage({ title, setLoaded }: Props) {
   let { mouseX, mouseY } = useMouse()
-  const [desktops, setDesktops] = useState<DeviceObj[]>([])
+  const [deviceObjs, setDeviceObjs] = useState<DeviceObj[]>([])
   const clickedDevice = useContext(PreviewControlsState)
   const setClickedDevice = useContext(PreviewControlsAction)
 
@@ -33,8 +33,8 @@ export default function MainStage({ title, setLoaded }: Props) {
   useEffect(() => {
     setLoaded()
     getHosts().then((hosts) => {
-      setDesktops([
-        ...desktops,
+      setDeviceObjs([
+        ...deviceObjs,
         ...layoutFunc(
           hosts.map((h) => {
             return {
@@ -47,10 +47,10 @@ export default function MainStage({ title, setLoaded }: Props) {
     })
   }, [])
 
-  useEffect(() => {}, [isDesktopsClicked, desktops])
+  useEffect(() => {}, [isDesktopsClicked, deviceObjs])
   hostUpdateHook((d) => {
     let didExist = false
-    let newDesktops = desktops.map((desktop) => {
+    let newDesktops = deviceObjs.map((desktop) => {
       if (desktop.device.ip === d.ip) {
         didExist = true
         return { ...desktop, device: d }
@@ -58,8 +58,8 @@ export default function MainStage({ title, setLoaded }: Props) {
       return desktop
     })
     if (!didExist) {
-      setDesktops([
-        ...desktops,
+      setDeviceObjs([
+        ...deviceObjs,
         layoutFunc([
           {
             position: [0, 0, 0],
@@ -68,13 +68,13 @@ export default function MainStage({ title, setLoaded }: Props) {
         ])[0],
       ])
     } else {
-      setDesktops(newDesktops)
+      setDeviceObjs(newDesktops)
     }
   })
 
   useEffect(() => {
-    setDesktops(layoutFunc(desktops))
-  }, [isDesktopsClicked, layoutFunc, desktops])
+    setDeviceObjs(layoutFunc(deviceObjs))
+  }, [isDesktopsClicked, layoutFunc, deviceObjs])
 
   const cameraCenter = useRef<{ y: number; z: number }>({ y: cameraDefault[1], z: cameraDefault[2] })
 
@@ -96,8 +96,8 @@ export default function MainStage({ title, setLoaded }: Props) {
         e.stopPropagation()
         setClickedDevice('desktop')
       }}>
-      {desktops.map(({ device, position }, idx) => (
-        <Desktop key={idx} animate={{ position: position }} isOpened={isDesktopsClicked} />
+      {deviceObjs.map(({ device, position }, idx) => (
+        <DeviceModel key={idx} animate={{ position: position }} isOpened={isDesktopsClicked} />
       ))}
     </motion.group>
   )
