@@ -1,15 +1,16 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { Desktop } from '../Desktop'
+import { DeviceModel } from '../DeviceModel'
 import useMouse from '@/hooks/useMouse'
 import { useFrame } from '@react-three/fiber'
 import { cameraDefault } from '@/utils/global'
 import { DeviceObj } from '@/utils/types'
 import { DEVICES_OBJ } from '@/mocks'
-import { generateDeviceOnSphere } from '@/utils/addDevice'
 import { motion } from 'framer-motion-3d'
-import { transformPositionsToGrid } from '@/utils/transformPositionsToGrid'
 import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
+
+import { getHosts, hostUpdateHook } from '@/utils/api'
+import { generateDeviceOnSphere, transformPositionsToGrid } from '@/utils/layoutFuncs'
 
 const CAMERA_SPEED = 0.08
 
@@ -20,23 +21,60 @@ type Props = {
 
 export default function MainStage({ title, setLoaded }: Props) {
   let { mouseX, mouseY } = useMouse()
-  const [desktops, setDesktops] = useState<DeviceObj[]>([])
-  const { previewControls } = useContext(PreviewControlsStateContext)
-  const { setPreviewControls } = useContext(PreviewControlsActionContext)
+  const [deviceObjs, setDeviceObjs] = useState<DeviceObj[]>([])
+  const clickedDevice = useContext(PreviewControlsStateContext)
+  const previewControlsActionContext = useContext(PreviewControlsActionContext)
+  const isDesktopsClicked = clickedDevice.previewControls === 'desktop'
 
-  const isDesktopsClicked = previewControls === 'desktop'
+  // const [layoutFunc, setLayoutFunc] = useState<(devices: DeviceObj[]) => DeviceObj[]>(generateDeviceOnSphere)
+
+  const layoutFunc = isDesktopsClicked ? transformPositionsToGrid : generateDeviceOnSphere
 
   useEffect(() => {
     setLoaded()
+    getHosts().then((hosts) => {
+      setDeviceObjs([
+        ...deviceObjs,
+        ...layoutFunc(
+          hosts.map((h) => {
+            return {
+              position: [0, 0, 0],
+              device: h,
+            }
+          }),
+        ),
+      ])
+    })
   }, [])
 
-  useEffect(() => {
-    if (!isDesktopsClicked) {
-      setDesktops(generateDeviceOnSphere(new Array(50).fill(DEVICES_OBJ[0].device)))
+  useEffect(() => {}, [isDesktopsClicked, deviceObjs])
+  hostUpdateHook((d) => {
+    let didExist = false
+    let newDesktops = deviceObjs.map((desktop) => {
+      if (desktop.device.ip === d.ip) {
+        didExist = true
+        return { ...desktop, device: d }
+      }
+      return desktop
+    })
+    if (!didExist) {
+      setDeviceObjs([
+        ...deviceObjs,
+        layoutFunc([
+          {
+            position: [0, 0, 0],
+            device: d,
+          },
+        ])[0],
+      ])
     } else {
-      setDesktops((prev) => transformPositionsToGrid(prev))
+      setDeviceObjs(newDesktops)
     }
-  }, [isDesktopsClicked])
+  })
+
+  useEffect(() => {
+    setDeviceObjs(layoutFunc(deviceObjs))
+  }, [isDesktopsClicked, layoutFunc, deviceObjs])
 
   const cameraCenter = useRef<{ y: number; z: number }>({ y: cameraDefault[1], z: cameraDefault[2] })
 
@@ -56,10 +94,10 @@ export default function MainStage({ title, setLoaded }: Props) {
       whileHover={{ scale: isDesktopsClicked ? 1 : 1.1 }}
       onClick={(e) => {
         e.stopPropagation()
-        setPreviewControls('desktop')
+        previewControlsActionContext.setPreviewControls('desktop')
       }}>
-      {desktops.map(({ device, position }, idx) => (
-        <Desktop key={idx} animate={{ position: position }} isOpened={isDesktopsClicked} />
+      {deviceObjs.map(({ device, position }, idx) => (
+        <DeviceModel key={idx} animate={{ position: position }} variant={clickedDevice.previewControls as any} />
       ))}
     </motion.group>
   )
