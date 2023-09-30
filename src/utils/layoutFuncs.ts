@@ -9,8 +9,14 @@ export function generateDeviceOnSphere(devices: DeviceObj[]): DeviceObj[] {
       const radius = 0.8
       const theta = Math.random() * 2 * Math.PI
       const phi = Math.acos(2 * Math.random() - 1)
-      const x = radius * Math.cos(theta) * Math.sin(phi)
-      const y = radius * Math.sin(theta) * Math.sin(phi)
+      let xOffset = 0
+      let yOffset = 0
+      if (device.device.device_type === 'phone') {
+        xOffset = -BORDERS[0]
+        yOffset = 0
+      }
+      const x = radius * Math.cos(theta) * Math.sin(phi) + xOffset
+      const y = radius * Math.sin(theta) * Math.sin(phi) + yOffset
       const z = radius * Math.cos(phi)
       device = { ...device, spherePosition: [x, y, z] }
     }
