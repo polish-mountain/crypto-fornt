@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { DeviceModel } from '../Desktop'
+import { DeviceModel } from '../DeviceModel'
 import useMouse from '@/hooks/useMouse'
 import { useFrame } from '@react-three/fiber'
 import { cameraDefault } from '@/utils/global'
