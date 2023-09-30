@@ -1,22 +1,56 @@
-import { createContext, useState } from 'react'
+import { cameraDefault } from '@/utils/global'
+import React, { createContext, useReducer, useContext, ReactNode } from 'react'
+
+const SET_PREVIEW_CONTROLS = 'SET_PREVIEW_CONTROLS'
+const SET_CAMERA_POSITION = 'SET_CAMERA_POSITION'
 
 type StateProps = {
-  previewControls: 'phone' | 'desktop' | 'laptop' | null
+  previewControls: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null
+  cameraPosition: [number, number, number]
 }
 
-type ActionProps = {
-  setPreviewControls: (value: 'phone' | 'desktop' | 'laptop' | null) => void
+const initialState: StateProps = {
+  previewControls: null,
+  cameraPosition: cameraDefault,
 }
 
-export const PreviewControlsState = createContext(null)
-export const PreviewControlsAction = createContext(null)
+function reducer(state: StateProps, action: { type: string; payload: any }) {
+  switch (action.type) {
+    case SET_PREVIEW_CONTROLS:
+      return { ...state, previewControls: action.payload }
+    case SET_CAMERA_POSITION:
+      return { ...state, cameraPosition: action.payload }
+    default:
+      throw new Error(`Unknown action: ${action.type}`)
+  }
+}
 
-export function PreviewControls({ children }) {
-  const [previewControls, setPreviewControls] = useState<StateProps>(null)
+export const PreviewControlsStateContext = createContext<StateProps>({ ...initialState })
+export const PreviewControlsActionContext = createContext<{
+  setPreviewControls: (
+    value: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null,
+  ) => void
+  setCameraPosition: (value: [number, number, number]) => void
+} | null>(null)
+
+interface PreviewControlsProviderProps {
+  children: ReactNode
+}
+
+export function PreviewControlsProvider({ children }: PreviewControlsProviderProps) {
+  const [state, dispatch] = useReducer(reducer, initialState)
+
+  const setPreviewControls = (
+    value: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null,
+  ) => dispatch({ type: SET_PREVIEW_CONTROLS, payload: value })
+
+  const setCameraPosition = (value: [number, number, number]) => dispatch({ type: SET_CAMERA_POSITION, payload: value })
 
   return (
-    <PreviewControlsAction.Provider value={setPreviewControls}>
-      <PreviewControlsState.Provider value={previewControls}>{children}</PreviewControlsState.Provider>
-    </PreviewControlsAction.Provider>
+    <PreviewControlsStateContext.Provider value={state}>
+      <PreviewControlsActionContext.Provider value={{ setPreviewControls, setCameraPosition }}>
+        {children}
+      </PreviewControlsActionContext.Provider>
+    </PreviewControlsStateContext.Provider>
   )
 }

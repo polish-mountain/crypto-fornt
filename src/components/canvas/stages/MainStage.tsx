@@ -9,7 +9,7 @@ import { DEVICES_OBJ } from '@/mocks'
 import { generateDeviceOnSphere } from '@/utils/addDevice'
 import { motion } from 'framer-motion-3d'
 import { transformPositionsToGrid } from '@/utils/transformPositionsToGrid'
-import { PreviewControlsAction, PreviewControlsState } from '@/contexts/previewControlls'
+import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
 
 const CAMERA_SPEED = 0.08
 
@@ -21,11 +21,10 @@ type Props = {
 export default function MainStage({ title, setLoaded }: Props) {
   let { mouseX, mouseY } = useMouse()
   const [desktops, setDesktops] = useState<DeviceObj[]>([])
-  const clickedDevice = useContext(PreviewControlsState)
-  const setClickedDevice = useContext(PreviewControlsAction)
+  const { previewControls } = useContext(PreviewControlsStateContext)
+  const { setPreviewControls } = useContext(PreviewControlsActionContext)
 
-  const isDesktopsClicked = clickedDevice === 'desktop'
-  console.log(isDesktopsClicked)
+  const isDesktopsClicked = previewControls === 'desktop'
 
   useEffect(() => {
     setLoaded()
@@ -57,7 +56,7 @@ export default function MainStage({ title, setLoaded }: Props) {
       whileHover={{ scale: isDesktopsClicked ? 1 : 1.1 }}
       onClick={(e) => {
         e.stopPropagation()
-        setClickedDevice('desktop')
+        setPreviewControls('desktop')
       }}>
       {desktops.map(({ device, position }, idx) => (
         <Desktop key={idx} animate={{ position: position }} isOpened={isDesktopsClicked} />
