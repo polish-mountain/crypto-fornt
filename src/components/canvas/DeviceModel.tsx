@@ -19,8 +19,9 @@ type Props = {
 
 const Z_OFFSET_MAP = {
   laptop: 0.1,
-  desktop: 0.4,
+  desktop: 1.0,
   phone: 0.2,
+  tablet: 0.2
 }
 const ROTATION_MAP = {
   laptop: [0, 0, 0],

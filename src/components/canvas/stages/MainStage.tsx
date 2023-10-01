@@ -26,6 +26,10 @@ const DESKTOP_MATERIALS = [
     name: 'Material',
     material: new THREE.MeshBasicMaterial({ color: '#ff0000' }),
   },
+  {
+    name: 'image-screen',
+    material: new THREE.MeshBasicMaterial({ color: '#000000' })
+  }
 ]
 
 const CAMERA_SPEED = 0.08
