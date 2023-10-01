@@ -17,3 +17,10 @@ export const scrollToSection = (id) => {
     })
   }
 }
+
+export function groupBy<T, S extends string>(xs: T[], selector: (x: T) => S): { [key in S]: T[] } {
+  return xs.reduce(function (rv, x) {
+    (rv[selector(x)] = rv[selector(x)] || []).push(x);
+    return rv;
+  }, {} as { [key in S]: T[] });
+};

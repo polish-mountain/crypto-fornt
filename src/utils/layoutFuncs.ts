@@ -1,7 +1,14 @@
 // adds device to sphere
 
 import { BORDERS } from './global'
-import { Device, DeviceObj } from './types'
+import { Device, DeviceObj, DeviceType } from './types'
+
+const DUPA_POINT: [number, number] = [-10, -10]
+const Z: number = 0
+
+export type LayoutFuncsProps = {
+  deviceType: DeviceType
+}
 
 export function generateDeviceOnSphere(devices: Device[]): [number, number, number][] {
   return devices.map((device) => {
@@ -54,7 +61,7 @@ function cyrb128(str) {
   h2 = Math.imul(h4 ^ (h2 >>> 22), 2869860233)
   h3 = Math.imul(h1 ^ (h3 >>> 17), 951274213)
   h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179)
-  ;(h1 ^= h2 ^ h3 ^ h4), (h2 ^= h1), (h3 ^= h1), (h4 ^= h1)
+    ; (h1 ^= h2 ^ h3 ^ h4), (h2 ^= h1), (h3 ^= h1), (h4 ^= h1)
   return [h1 >>> 0, h2 >>> 0, h3 >>> 0, h4 >>> 0]
 }
 function sfc32(a, b, c, d) {
@@ -81,12 +88,18 @@ function mulberry32(a) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
 }
-export function transformPositionsToGrid(devices: Device[]): [number, number, number][] {
-  return devices.map((device, i) => {
-    const step = 1
-    const x = step * (i % 10)
-    const y = step * Math.floor(i / 10)
-    const z = 0
-    return [x - BORDERS[0], y - BORDERS[1], z]
+export function transformPositionsToGrid(devices: Device[], { deviceType }: LayoutFuncsProps): [number, number, number][] {
+  let i = 0
+  console.log(devices)
+  return devices.map((device) => {
+    if (device.device_type === deviceType) {
+      const step = 1
+      const x = step * (i % 10)
+      const y = step * Math.floor(i / 10)
+      i++
+      return [x - BORDERS[0], y - BORDERS[1], Z]
+    } else {
+      return [...DUPA_POINT, Z]
+    }
   })
 }

@@ -6,11 +6,11 @@ import { motion } from 'framer-motion-3d'
 import * as THREE from 'three'
 import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
 import { cameraDefault } from '@/utils/global'
-import { Device, MaterialInput } from '@/utils/types'
+import { Device, DeviceType, MaterialInput } from '@/utils/types'
 
 type Props = {
   animate: { position: [number, number, number] }
-  variant: 'desktop' | 'laptop' | 'phone'
+  variant: DeviceType
   materials: MaterialInput[]
   device: Device
 }

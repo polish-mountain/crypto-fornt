@@ -1,4 +1,4 @@
-import { Device } from '@/utils/types'
+import { Device, DeviceType } from '@/utils/types'
 import React, { createContext, useReducer, useContext, ReactNode } from 'react'
 
 const SET_PREVIEW_CONTROLS = 'SET_PREVIEW_CONTROLS'
@@ -6,7 +6,7 @@ const SET_IS_PREVIEW = 'SET_IS_PREVIEW'
 const SET_Y_SCROLL_OFFSET = 'SET_Y_SCROLL_OFFSET'
 
 type StateProps = {
-  previewControls: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null
+  previewControls: DeviceType | null
   preview: Device | null
   yScrollOffset: number
 }
@@ -33,7 +33,7 @@ function reducer(state: StateProps, action: { type: string; payload: any }) {
 export const PreviewControlsStateContext = createContext<StateProps>({ ...initialState })
 export const PreviewControlsActionContext = createContext<{
   setPreviewControls: (
-    value: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null,
+    value: DeviceType | null,
   ) => void
   setPreview: (value: Device) => void
   setYScrollOffset: (value: number) => void
@@ -47,7 +47,7 @@ export function PreviewControlsProvider({ children }: PreviewControlsProviderPro
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const setPreviewControls = (
-    value: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null,
+    value: DeviceType | null,
   ) => dispatch({ type: SET_PREVIEW_CONTROLS, payload: value })
 
   const setPreview = (value: Device) => dispatch({ type: SET_IS_PREVIEW, payload: value })
