@@ -22,17 +22,16 @@ export const scrollToSection = (id) => {
 
 export function groupBy<T, S extends string>(xs: T[], selector: (x: T) => S): { [key in S]: T[] } {
   return xs.reduce(function (rv, x) {
-    (rv[selector(x)] = rv[selector(x)] || []).push(x);
-    return rv;
-  }, {} as { [key in S]: T[] });
-};
+    ;(rv[selector(x)] = rv[selector(x)] || []).push(x)
+    return rv
+  }, {} as { [key in S]: T[] })
+}
 
 export const applyMaterials = (ref: MutableRefObject<any>, materials: MaterialInput[]) => {
   if (ref.current) {
     ref.current.traverse((child) => {
       if (child.isMesh) {
         const material = materials.find(({ name }) => name === child.material.name)
-        console.log(child.material.name)
         if (material) {
           child.material = material.material
         }
