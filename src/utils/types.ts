@@ -1,9 +1,11 @@
+export type DeviceType = 'laptop' | 'desktop' | 'phone'
+
 export type Device = {
   ip: string
   host?: string
   open_services?: Service[]
   device_name: string
-  device_type?: 'laptop' | 'desktop' | 'phone'
+  device_type: DeviceType
 }
 
 export type Service = {

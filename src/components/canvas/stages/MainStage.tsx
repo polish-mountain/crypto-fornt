@@ -1,7 +1,7 @@
 import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
 import useMouse from '@/hooks/useMouse'
 import { cameraDefault } from '@/utils/global'
-import { Device, DeviceObj } from '@/utils/types'
+import { Device, DeviceObj, DeviceType } from '@/utils/types'
 import { useFrame } from '@react-three/fiber'
 import { motion } from 'framer-motion-3d'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -9,8 +9,9 @@ import * as THREE from 'three'
 import { DeviceModel } from '../DeviceModel'
 
 import { getHosts, hostUpdateHook } from '@/utils/api'
-import { generateDeviceOnSphere, transformPositionsToGrid } from '@/utils/layoutFuncs'
+import { LayoutFuncsProps, generateDeviceOnSphere, transformPositionsToGrid } from '@/utils/layoutFuncs'
 import { useScroll } from '@react-three/drei'
+import { groupBy } from '@/utils/functions'
 
 const DESKTOP_MATERIALS = [
   {
@@ -36,11 +37,10 @@ export default function MainStage({ title, setLoaded }: Props) {
   const [hosts, setHosts] = useState<Device[]>([])
   const { previewControls, yScrollOffset } = useContext(PreviewControlsStateContext)
   const { setPreviewControls, setYScrollOffset } = useContext(PreviewControlsActionContext)
-  const isInGridMode = previewControls === 'desktop'
-
-  // const [layoutFunc, setLayoutFunc] = useState<(devices: DeviceObj[]) => DeviceObj[]>(generateDeviceOnSphere)
+  const isInGridMode = previewControls !== null
 
   const layoutFunc = isInGridMode ? transformPositionsToGrid : generateDeviceOnSphere
+  const layoutFuncProps: LayoutFuncsProps = { deviceType: previewControls }
 
   //scroll
   useEffect(() => {
@@ -81,7 +81,10 @@ export default function MainStage({ title, setLoaded }: Props) {
     }
   }, [d])
 
-  const positions = useMemo(() => layoutFunc(hosts), [hosts, layoutFunc])
+  const positions = useMemo(
+    () => Object.fromEntries(layoutFunc(hosts, layoutFuncProps).map((position, i) => [hosts[i].ip, position])),
+    [hosts, layoutFunc],
+  )
 
   const cameraCenter = useRef<{ y: number; z: number }>({ y: cameraDefault[1], z: cameraDefault[2] })
 
@@ -96,24 +99,33 @@ export default function MainStage({ title, setLoaded }: Props) {
     camera.lookAt(0, 0, 0)
   })
 
+  const grouppedHosts = groupBy(hosts, (host) => host.device_type)
   return (
     <motion.group animate={{ y: yScrollOffset }} transition={{ duration: 0.5 }}>
-      <motion.group
-        whileHover={{ scale: isInGridMode ? 1 : 1.1 }}
-        onClick={(e) => {
-          e.stopPropagation()
-          setPreviewControls('desktop')
-        }}>
-        {hosts.map((device, idx) => (
-          <DeviceModel
-            variant={device.device_type || 'desktop'}
-            key={device.ip}
-            device={device}
-            animate={{ position: positions[idx] }}
-            materials={DESKTOP_MATERIALS}
-          />
-        ))}
-      </motion.group>
+      {Object.keys(grouppedHosts).map((device_type: DeviceType) => {
+        const devices = grouppedHosts[device_type]
+        return (
+          <motion.group
+            key={device_type}
+            whileHover={{ scale: isInGridMode ? 1 : 1.1 }}
+            onClick={(e) => {
+              e.stopPropagation()
+              setPreviewControls(device_type)
+            }}>
+            {devices.map((device) => {
+              return (
+                <DeviceModel
+                  variant={device.device_type || 'desktop'}
+                  key={device.ip}
+                  device={device}
+                  animate={{ position: positions[device.ip] }}
+                  materials={DESKTOP_MATERIALS}
+                />
+              )
+            })}
+          </motion.group>
+        )
+      })}
     </motion.group>
   )
 }

@@ -6,16 +6,23 @@ const ROOT_URL = 'https://cyber-api.alu.dog'
 
 export async function getHosts(): Promise<Device[]> {
   const response = await fetch(ROOT_URL + '/api/hosts')
-  const hosts: Device[] = await response.json()
-  return hosts
+  const objs = await response.json()
+  return objs.map(host => {
+    if (host.device_type == '')
+      host.device_type = 'desktop'
+    host.device_type
+    return host
+  })
 }
 
-export function hostUpdateHook() {
+export function hostUpdateHook(): Device | null {
   let socketUrl = ROOT_URL.replace('https://', 'wss://').replace('http://', 'ws://')
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl + '/api/ws')
   if (lastMessage) {
-    const device: Device = JSON.parse(lastMessage.data)
-    return device
+    let obj = JSON.parse(lastMessage.data)
+    if (obj.device_type == '')
+      obj.device_type = 'desktop'
+    return obj
   }
 
   return null
