@@ -6,12 +6,13 @@ import { motion } from 'framer-motion-3d'
 import * as THREE from 'three'
 import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
 import { cameraDefault } from '@/utils/global'
-import { MaterialInput } from '@/utils/types'
+import { Device, MaterialInput } from '@/utils/types'
 
 type Props = {
   animate: { position: [number, number, number] }
   variant: 'desktop' | 'laptop' | 'phone'
   materials: MaterialInput[]
+  device: Device
 }
 
 const MODEL_SCALES = {
@@ -19,17 +20,25 @@ const MODEL_SCALES = {
   desktop: 1,
 }
 
-export function DeviceModel({ animate, variant, materials }: Props) {
+export function DeviceModel({ animate, variant, materials, device }: Props) {
   const gltf = useSkinnedMeshClone(`/models/${variant}.glb`)
   const [isCameraAnimating, setIsCameraAnimating] = useState(false)
-  const { previewControls, isPreview } = useContext(PreviewControlsStateContext)
-  const { setPreviewControls, setIsPreview } = useContext(PreviewControlsActionContext)
+  const { previewControls, preview } = useContext(PreviewControlsStateContext)
+  const { setPreviewControls, setPreview } = useContext(PreviewControlsActionContext)
   const isOpened = previewControls === variant
+  const { ip } = device
+  const isPreview = preview?.ip === ip
 
   const ref = useRef<any>()
   const {
     position: [x, y, z],
   } = animate
+
+  useEffect(() => {
+    if (isPreview && !isCameraAnimating) {
+      setIsCameraAnimating(true)
+    }
+  }, [isPreview])
 
   useEffect(() => {
     if (ref.current) {
@@ -46,7 +55,8 @@ export function DeviceModel({ animate, variant, materials }: Props) {
 
   useFrame(({ camera }) => {
     if (isCameraAnimating) {
-      if (isPreview) {
+      if (preview.ip === ip) {
+        console.log('XD')
         const targetPosition = new THREE.Vector3(x, y, z + 1)
         camera.position.lerp(targetPosition, 0.05)
         camera.lookAt(x, y, z)
@@ -69,7 +79,7 @@ export function DeviceModel({ animate, variant, materials }: Props) {
   const handleGroupClick = (e) => {
     if (previewControls === variant) {
       setIsCameraAnimating(true)
-      setIsPreview(true)
+      setPreview(device)
       e.stopPropagation()
     }
   }
@@ -101,6 +111,7 @@ export function DeviceModel({ animate, variant, materials }: Props) {
       initial='closed'
       animate={isOpened ? 'opened' : 'closed'}
       whileHover={hoverVariants}
+      onClick={handleGroupClick}
       variants={variants}>
       <motion.group scale={MODEL_SCALES[variant]}>
         <motion.primitive ref={ref} object={gltf.scene} />

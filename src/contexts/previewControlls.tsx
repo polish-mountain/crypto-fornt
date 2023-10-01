@@ -1,4 +1,4 @@
-import { cameraDefault } from '@/utils/global'
+import { Device } from '@/utils/types'
 import React, { createContext, useReducer, useContext, ReactNode } from 'react'
 
 const SET_PREVIEW_CONTROLS = 'SET_PREVIEW_CONTROLS'
@@ -6,12 +6,12 @@ const SET_IS_PREVIEW = 'SET_IS_PREVIEW'
 
 type StateProps = {
   previewControls: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null
-  isPreview: boolean
+  preview: Device | null
 }
 
 const initialState: StateProps = {
   previewControls: null,
-  isPreview: false,
+  preview: null,
 }
 
 function reducer(state: StateProps, action: { type: string; payload: any }) {
@@ -19,7 +19,7 @@ function reducer(state: StateProps, action: { type: string; payload: any }) {
     case SET_PREVIEW_CONTROLS:
       return { ...state, previewControls: action.payload }
     case SET_IS_PREVIEW:
-      return { ...state, isPreview: action.payload }
+      return { ...state, preview: action.payload }
     default:
       throw new Error(`Unknown action: ${action.type}`)
   }
@@ -30,7 +30,7 @@ export const PreviewControlsActionContext = createContext<{
   setPreviewControls: (
     value: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null,
   ) => void
-  setIsPreview: (value: boolean) => void
+  setPreview: (value: Device) => void
 } | null>(null)
 
 interface PreviewControlsProviderProps {
@@ -44,11 +44,11 @@ export function PreviewControlsProvider({ children }: PreviewControlsProviderPro
     value: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null,
   ) => dispatch({ type: SET_PREVIEW_CONTROLS, payload: value })
 
-  const setIsPreview = (value: boolean) => dispatch({ type: SET_IS_PREVIEW, payload: value })
+  const setPreview = (value: Device) => dispatch({ type: SET_IS_PREVIEW, payload: value })
 
   return (
     <PreviewControlsStateContext.Provider value={state}>
-      <PreviewControlsActionContext.Provider value={{ setPreviewControls, setIsPreview }}>
+      <PreviewControlsActionContext.Provider value={{ setPreviewControls, setPreview }}>
         {children}
       </PreviewControlsActionContext.Provider>
     </PreviewControlsStateContext.Provider>

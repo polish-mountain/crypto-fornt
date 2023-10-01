@@ -96,7 +96,8 @@ export default function MainStage({ title, setLoaded }: Props) {
       {hosts.map((device, idx) => (
         <DeviceModel
           variant={device.device_type || 'desktop'}
-          key={idx}
+          key={device.ip}
+          device={device}
           animate={{ position: positions[idx] }}
           materials={DESKTOP_MATERIALS}
         />
