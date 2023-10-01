@@ -34,11 +34,8 @@ export default function MainStage({ title, setLoaded }: Props) {
   let { mouseX, mouseY } = useMouse()
 
   const [hosts, setHosts] = useState<Device[]>([])
-  const { previewControls } = useContext(PreviewControlsStateContext)
-  const { setPreviewControls } = useContext(PreviewControlsActionContext)
-
   const clickedDevice = useContext(PreviewControlsStateContext)
-
+  const previewControlsActionContext = useContext(PreviewControlsActionContext)
   const isInGridMode = clickedDevice.previewControls === 'desktop'
 
   const [yScrollOffset, setYScrollOffset] = useState(0)
@@ -60,10 +57,6 @@ export default function MainStage({ title, setLoaded }: Props) {
   useEffect(() => {
     setYScrollOffset(0)
   }, [isInGridMode])
-
-  useEffect(() => {
-    console.log(previewControls)
-  }, [previewControls])
 
   useEffect(() => {
     setLoaded()
@@ -111,8 +104,7 @@ export default function MainStage({ title, setLoaded }: Props) {
         whileHover={{ scale: isInGridMode ? 1 : 1.1 }}
         onClick={(e) => {
           e.stopPropagation()
-          console.log('clicked out')
-          setPreviewControls('desktop')
+          previewControlsActionContext.setPreviewControls('desktop')
         }}>
         {hosts.map((device, idx) => (
           <DeviceModel
