@@ -49,7 +49,7 @@ export default function Vulnerabilities() {
           {preview.screenshots.map((url) => (
             <img src={url} className='drop-shadow-[0_3.5px_2.5px_rgba(0,0,0,0.8)]' />
           ))}
-          {preview.screenshots.length > 0 && (
+          {preview.screenshots.length > 0 && preview.open_services[0].title.includes('24G Switch') && (
             <button
               className='bg-[#2ecc7166] p-4  rounded-xl backdrop-blur'
               onClick={() => {
