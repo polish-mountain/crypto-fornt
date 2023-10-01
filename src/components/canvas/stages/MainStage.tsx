@@ -58,7 +58,7 @@ export default function MainStage({ title, setLoaded }: Props) {
   
   const [gridTexture] = useLoader(THREE.TextureLoader, ['/img/grid_texture.png'])
   
-  //scroll
+  // scroll
   useEffect(() => {
     function scrollListener(ev: WheelEvent) {
       if (isInGridMode && preview == null) setYScrollOffset(yScrollOffset + ev.deltaY * 0.004)

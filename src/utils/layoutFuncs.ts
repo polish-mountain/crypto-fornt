@@ -1,5 +1,3 @@
-// adds device to sphere
-
 import { BORDERS } from './global'
 import { Device, DeviceObj, DeviceType } from './types'
 
@@ -33,15 +31,9 @@ export type LayoutFuncsProps = {
 export function generateDeviceOnSphere(devices: Device[]): [number, number, number][] {
   return devices.map((device) => {
     const MAX_I32 = 1 << (32 - 1)
-    // Create cyrb128 state:
     var seed = cyrb128(device.ip)
-    // Four 32-bit component hashes provide the seed for sfc32.
-    // var rand = sfc32(seed[0], seed[1], seed[2], seed[3])
-
-    // Only one 32-bit component hash is needed for mulberry32.
     var rand = mulberry32(seed[0])
 
-    // Obtain sequential random numbers like so:
     const rand1 = rand()
     const rand2 = rand()
 

@@ -31,7 +31,6 @@ export const applyMaterials = (ref: MutableRefObject<any>, materials: MaterialIn
   if (ref.current) {
     ref.current.traverse((child) => {
       if (child.isMesh) {
-        // console.log(child.material.name)
         const material = materials.find(({ name }) => name === child.material.name)
         if (material) {
           child.material = material.material
