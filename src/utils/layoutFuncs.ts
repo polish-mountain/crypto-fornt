@@ -10,7 +10,7 @@ const Z_MAP = {
   phone: 0.4,
 }
 const STEP_MAP = {
-  laptop: 1.4,
+  laptop: 1.2,
   desktop: 1,
   phone: 0.8,
 }

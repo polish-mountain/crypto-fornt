@@ -16,7 +16,7 @@ type Props = {
 }
 
 const MODEL_SCALES = {
-  laptop: 0.2,
+  laptop: 0.18,
   desktop: 1,
 }
 
