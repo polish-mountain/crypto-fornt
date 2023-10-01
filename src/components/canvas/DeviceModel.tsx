@@ -23,7 +23,7 @@ const MODEL_SCALES = {
 export function DeviceModel({ animate, variant, materials, device }: Props) {
   const gltf = useSkinnedMeshClone(`/models/${variant}.glb`)
   const [isCameraAnimating, setIsCameraAnimating] = useState(false)
-  const { previewControls, preview } = useContext(PreviewControlsStateContext)
+  const { previewControls, preview, yScrollOffset } = useContext(PreviewControlsStateContext)
   const { setPreviewControls, setPreview } = useContext(PreviewControlsActionContext)
   const isOpened = previewControls === variant
   const { ip } = device
@@ -33,12 +33,6 @@ export function DeviceModel({ animate, variant, materials, device }: Props) {
   const {
     position: [x, y, z],
   } = animate
-
-  useEffect(() => {
-    if (isPreview && !isCameraAnimating) {
-      setIsCameraAnimating(true)
-    }
-  }, [isPreview])
 
   useEffect(() => {
     if (ref.current) {
@@ -55,15 +49,9 @@ export function DeviceModel({ animate, variant, materials, device }: Props) {
 
   useFrame(({ camera }) => {
     if (isCameraAnimating) {
-      if (preview.ip === ip) {
-        console.log('XD')
-        const targetPosition = new THREE.Vector3(x, y, z + 1)
-        camera.position.lerp(targetPosition, 0.05)
-        camera.lookAt(x, y, z)
-
-        if (camera.position.distanceTo(targetPosition) < 0.1) {
-          setIsCameraAnimating(false)
-        }
+      if (preview) {
+        camera.position.set(x, y + 0.3 + yScrollOffset, z + 1)
+        camera.lookAt(x, y + 0.5 + yScrollOffset, z)
       } else {
         const targetPosition = new THREE.Vector3(...cameraDefault)
         camera.position.lerp(targetPosition, 0.05)
