@@ -70,18 +70,22 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
   const isPreview = preview?.ip === ip
 
   const objectRef = useRef<any>()
-  const { position: [x, y, z] } = animate
+  const {
+    position: [x, y, z],
+  } = animate
 
-  useEffect(() => { applyMaterials(objectRef, materials) }, [objectGltf])
+  useEffect(() => {
+    applyMaterials(objectRef, materials)
+  }, [objectGltf])
 
   useFrame(({ camera }) => {
     if (isCameraAnimating) {
       if (preview) {
-        const camPosOffset = CAM_POS_OFFSET_MAP[variant];
-        const camPos = [x + camPosOffset[0], y + camPosOffset[1] + yScrollOffset, z + camPosOffset[2]];
+        const camPosOffset = CAM_POS_OFFSET_MAP[variant]
+        const camPos = [x + camPosOffset[0], y + camPosOffset[1] + yScrollOffset, z + camPosOffset[2]]
         camera.position.set(...camPos)
-        const camLookAtOffset = CAM_LOOK_AT_OFFSET_MAP[variant];
-        const camLookAt = [x + camLookAtOffset[0], y + camLookAtOffset[1] + yScrollOffset, z + camLookAtOffset[2]];
+        const camLookAtOffset = CAM_LOOK_AT_OFFSET_MAP[variant]
+        const camLookAt = [x + camLookAtOffset[0], y + camLookAtOffset[1] + yScrollOffset, z + camLookAtOffset[2]]
         camera.lookAt(...camLookAt)
       } else {
         const targetPosition = new THREE.Vector3(...cameraDefault)
@@ -127,9 +131,24 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
     z: isOpened ? zOffset : animate.position[2],
   }
 
-  const exclamationMarkGltf = useSkinnedMeshClone("/models/exclamation_mark.glb")
+  const exclamationMarkGltf = useSkinnedMeshClone('/models/exclamation_mark.glb')
   const exclamationMarkRef = useRef<any>()
   useEffect(() => applyMaterials(exclamationMarkRef, materials), [exclamationMarkGltf])
+  const [exclamationMarkRotation, setExclamationMarkRotation] = useState(0)
+  
+  useEffect(() => {
+    if (device.open_services.length > 0 && device.open_services[0].title.includes('24G Switch')) {
+      const int = setInterval(() => {
+        setExclamationMarkRotation(exclamationMarkRotation + 0.1)
+      }, 20)
+      return () => {
+        clearInterval(int)
+      }
+    }
+    return () => {}
+  }, [exclamationMarkRotation])
+
+  const dSize = 1 - Math.cos(exclamationMarkRotation) * 0.2
 
   return (
     <motion.group
@@ -138,14 +157,18 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
       whileHover={hoverVariants}
       onClick={handleGroupClick}
       variants={variants}>
-      <motion.group scale={MODEL_SCALES[variant]} rotation={ROTATION_MAP[variant]} position={POSITION_MAP[variant]}>
+      <motion.group
+        scale={MODEL_SCALES[variant]}
+        rotation={ROTATION_MAP[variant]}
+        position={POSITION_MAP[variant]}
+        transition={{ duration: 0.5 }}>
         <motion.primitive ref={objectRef} object={objectGltf.scene} />
       </motion.group>
-      {
-        !isWarning ? null : <motion.group position={[-1, 2, 0.3]} scale={[0.8, 0.8, 0.1]}>
+      {!isWarning ? null : (
+        <motion.group position={[-1, 2, 0.3]} scale={[0.8 * dSize, 0.8 * dSize, 0.1 * dSize]} rotation={[0, exclamationMarkRotation, 0]}>
           <motion.primitive ref={exclamationMarkRef} object={exclamationMarkGltf.scene} />
         </motion.group>
-      }
+      )}
     </motion.group>
   )
 }

@@ -48,7 +48,7 @@ export default function MainStage({ title, setLoaded }: Props) {
   let { mouseX, mouseY } = useMouse()
 
   const [hosts, setHosts] = useState<Device[]>([])
-  const { previewControls, yScrollOffset } = useContext(PreviewControlsStateContext)
+  const { previewControls, preview, yScrollOffset } = useContext(PreviewControlsStateContext)
   const { setPreviewControls, setYScrollOffset } = useContext(PreviewControlsActionContext)
   const isInGridMode = previewControls !== null
 
@@ -61,7 +61,7 @@ export default function MainStage({ title, setLoaded }: Props) {
   //scroll
   useEffect(() => {
     function scrollListener(ev: WheelEvent) {
-      if (isInGridMode) setYScrollOffset(yScrollOffset + ev.deltaY * 0.004)
+      if (isInGridMode && preview == null) setYScrollOffset(yScrollOffset + ev.deltaY * 0.004)
     }
     document.body.addEventListener('wheel', scrollListener)
     return () => document.body.removeEventListener('wheel', scrollListener)

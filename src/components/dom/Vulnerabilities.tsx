@@ -1,13 +1,14 @@
 import { PreviewControlsStateContext } from '@/contexts/previewControlls'
 import { Device } from '@/utils/types'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
+import RemediationModal from './RemediationModal'
 
 export default function Vulnerabilities() {
   const { preview } = useContext(PreviewControlsStateContext)
 
   let isGood = !preview?.open_services || preview?.open_services.length === 0
-
+  const [remediation, setRemediation] = useState<boolean>(false)
   return (
     <AnimatePresence>
       {!!preview?.open_services && (
@@ -27,7 +28,7 @@ export default function Vulnerabilities() {
           {preview.open_services.map((service, index) => (
             <div key={index} className='flex flex-col gap-4'>
               <h3 className='text-center font-bold text-2xl font-mono text-purple-primary tracking-widest drop-shadow-[0_3.5px_2.5px_rgba(0,0,0,0.8)]'>
-                CYBERSECUIRITY THREAT
+                CYBERSECURITY THREAT
               </h3>
               {/* <p className='font-bold'>{index + 1}.</p> */}
               <h2 className='drop-shadow-[0_3.5px_2.5px_rgba(0,0,0,0.8)] text- font-bold text-2xl'>
@@ -47,7 +48,22 @@ export default function Vulnerabilities() {
           {preview.screenshots.map((url) => (
             <img src={url} className='drop-shadow-[0_3.5px_2.5px_rgba(0,0,0,0.8)]' />
           ))}
-          <div className='h-32' />
+          {preview.screenshots.length > 0 && (
+            <button
+              className='bg-[#2ecc7166] p-4  rounded-xl backdrop-blur'
+              onClick={() => {
+                setRemediation(true)
+              }}>
+              Remediation instructions
+            </button>
+          )}
+          <div className='h-64' />
+
+          {remediation && <RemediationModal onClick={
+            () => {
+              setRemediation(false)
+            }
+          } />}
         </motion.div>
       )}
     </AnimatePresence>
