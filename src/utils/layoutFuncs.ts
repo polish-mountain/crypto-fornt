@@ -17,11 +17,11 @@ const STEP_MAP = {
   router: 1,
 }
 export const CENTER_MAP = {
-  laptop: [+BORDERS[0]/2, +BORDERS[1]/2],
-  desktop: [-BORDERS[0]/2, +BORDERS[1]/2],
-  phone: [-BORDERS[0], -BORDERS[1]/2],
-  tablet: [0, -BORDERS[1]/2],
-  router: [+BORDERS[0], -BORDERS[1]/2],
+  laptop: [+BORDERS[0] / 2, +BORDERS[1] / 2],
+  desktop: [-BORDERS[0] / 2, +BORDERS[1] / 2],
+  phone: [-BORDERS[0], -BORDERS[1] / 2],
+  tablet: [0, -BORDERS[1] / 2],
+  router: [+BORDERS[0], -BORDERS[1] / 2],
 }
 
 export type LayoutFuncsProps = {

@@ -12,7 +12,8 @@ export default function RemediationModal({ onClick }: { onClick: () => void }) {
         animate={{ y: 0, transition: { duration: 0.5 } }}
         className={
           'bg-[#2ecc7166] fixed  text-gray-300 flex flex-col py-4 px-2 w-[800px] h-[512px] justify-between left-[25vw] gap-8 top-0 bottom-0 my-auto border-[#ff8888] border-[2px] rounded-xl backdrop-blur overflow-y-scroll'
-        }>
+        }
+      >
         <h3 className='text-center font-bold text-2xl font-mono text-yellow-500 mt-2 tracking-widest drop-shadow-[0_3.5px_2.5px_rgba(0,0,0,0.8)]'>
           REMEDIATION INSTRUCTIONS
         </h3>

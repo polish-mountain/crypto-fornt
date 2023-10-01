@@ -135,7 +135,7 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
   const exclamationMarkRef = useRef<any>()
   useEffect(() => applyMaterials(exclamationMarkRef, materials), [exclamationMarkGltf])
   const [exclamationMarkRotation, setExclamationMarkRotation] = useState(0)
-  
+
   useEffect(() => {
     if (device.open_services.length > 0 && device.open_services[0].title.includes('24G Switch')) {
       const int = setInterval(() => {
@@ -156,16 +156,22 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
       animate={isOpened ? 'opened' : 'closed'}
       whileHover={hoverVariants}
       onClick={handleGroupClick}
-      variants={variants}>
+      variants={variants}
+    >
       <motion.group
         scale={MODEL_SCALES[variant]}
         rotation={ROTATION_MAP[variant]}
         position={POSITION_MAP[variant]}
-        transition={{ duration: 0.5 }}>
+        transition={{ duration: 0.5 }}
+      >
         <motion.primitive ref={objectRef} object={objectGltf.scene} />
       </motion.group>
       {!isWarning ? null : (
-        <motion.group position={[-1, 2, 0.3]} scale={[0.8 * dSize, 0.8 * dSize, 0.1 * dSize]} rotation={[0, exclamationMarkRotation, 0]}>
+        <motion.group
+          position={[-1, 2, 0.3]}
+          scale={[0.8 * dSize, 0.8 * dSize, 0.1 * dSize]}
+          rotation={[0, exclamationMarkRotation, 0]}
+        >
           <motion.primitive ref={exclamationMarkRef} object={exclamationMarkGltf.scene} />
         </motion.group>
       )}

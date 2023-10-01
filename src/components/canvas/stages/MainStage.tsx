@@ -51,9 +51,8 @@ export default function MainStage({ title, setLoaded }: Props) {
   const layoutFunc = isInGridMode ? transformPositionsToGrid : generateDeviceOnSphere
   const layoutFuncProps: LayoutFuncsProps = { deviceType: previewControls }
 
-  
   const [gridTexture] = useLoader(THREE.TextureLoader, ['/img/grid_texture.png'])
-  
+
   // scroll
   useEffect(() => {
     function scrollListener(ev: WheelEvent) {
@@ -118,44 +117,47 @@ export default function MainStage({ title, setLoaded }: Props) {
         const devices = grouppedHosts[device_type]
         const center = CENTER_MAP[device_type]
         const warnings = devices.filter((device) => (device.open_services || []).length > 0).length
-        return (<>
-          {!isInGridMode && <Text
-              scale={0.7}
-              position={[center[0], center[1] + 1.7, 0]}
-              color="white"
-              anchorX="center"
-              anchorY="middle"
-              lookAt={undefined} material={undefined} clear={undefined} geometry={undefined} raycast={undefined} add={undefined} copy={undefined} visible={undefined} id={undefined} name={undefined} type={undefined} translateX={undefined} translateY={undefined} translateZ={undefined} rotateX={undefined} rotateY={undefined} rotateZ={undefined} clone={undefined} uuid={undefined} parent={undefined} modelViewMatrix={undefined} normalMatrix={undefined} matrixWorld={undefined} matrixAutoUpdate={undefined} matrixWorldAutoUpdate={undefined} matrixWorldNeedsUpdate={undefined} castShadow={undefined} receiveShadow={undefined} frustumCulled={undefined} renderOrder={undefined} animations={undefined} userData={undefined} customDepthMaterial={undefined} customDistanceMaterial={undefined} isObject3D={undefined} onBeforeRender={undefined} onAfterRender={undefined} applyMatrix4={undefined} applyQuaternion={undefined} setRotationFromAxisAngle={undefined} setRotationFromEuler={undefined} setRotationFromMatrix={undefined} setRotationFromQuaternion={undefined} rotateOnAxis={undefined} rotateOnWorldAxis={undefined} translateOnAxis={undefined} localToWorld={undefined} worldToLocal={undefined} remove={undefined} removeFromParent={undefined} getObjectById={undefined} getObjectByName={undefined} getObjectByProperty={undefined} getObjectsByProperty={undefined} getWorldPosition={undefined} getWorldQuaternion={undefined} getWorldScale={undefined} getWorldDirection={undefined} traverse={undefined} traverseVisible={undefined} traverseAncestors={undefined} updateMatrix={undefined} updateMatrixWorld={undefined} updateWorldMatrix={undefined} toJSON={undefined} addEventListener={undefined} hasEventListener={undefined} removeEventListener={undefined} dispatchEvent={undefined} morphTargetInfluences={undefined} morphTargetDictionary={undefined} isMesh={undefined} updateMorphTargets={undefined} getVertexPosition={undefined}          >
-              {devices.length} {warnings > 0 ? `(!${warnings})` : ""}
-            </Text>}
-          <motion.group
-            key={device_type}
-            whileHover={{ scale: isInGridMode ? 1 : 1.1 }}
-            onClick={(e) => {
-              e.stopPropagation()
-              setPreviewControls(device_type)
-            }}>
-            {devices.map((device) => {
-              return (
-                <DeviceModel
-                  variant={device.device_type || 'desktop'}
-                  key={device.ip}
-                  device={device}
-                  animate={{ position: positions[device.ip] }}
-                  materials={DESKTOP_MATERIALS}
-                  isWarning={(device.open_services || []).length > 0}
-                />
-              )
-            })}
-          </motion.group>
-        </>
+        return (
+          <>
+            {!isInGridMode && (
+              <Text
+                scale={0.7}
+                position={[center[0], center[1] + 1.7, 0]}
+                color='white'
+                anchorX='center'
+                anchorY='middle'
+                lookAt={undefined} material={undefined} clear={undefined} geometry={undefined} raycast={undefined} add={undefined} copy={undefined} visible={undefined} id={undefined} name={undefined} type={undefined} translateX={undefined} translateY={undefined} translateZ={undefined} rotateX={undefined} rotateY={undefined} rotateZ={undefined} clone={undefined} uuid={undefined} parent={undefined} modelViewMatrix={undefined} normalMatrix={undefined} matrixWorld={undefined} matrixAutoUpdate={undefined} matrixWorldAutoUpdate={undefined} matrixWorldNeedsUpdate={undefined} castShadow={undefined} receiveShadow={undefined} frustumCulled={undefined} renderOrder={undefined} animations={undefined} userData={undefined} customDepthMaterial={undefined} customDistanceMaterial={undefined} isObject3D={undefined} onBeforeRender={undefined} onAfterRender={undefined} applyMatrix4={undefined} applyQuaternion={undefined} setRotationFromAxisAngle={undefined} setRotationFromEuler={undefined} setRotationFromMatrix={undefined} setRotationFromQuaternion={undefined} rotateOnAxis={undefined} rotateOnWorldAxis={undefined} translateOnAxis={undefined} localToWorld={undefined} worldToLocal={undefined} remove={undefined} removeFromParent={undefined} getObjectById={undefined} getObjectByName={undefined} getObjectByProperty={undefined} getObjectsByProperty={undefined} getWorldPosition={undefined} getWorldQuaternion={undefined} getWorldScale={undefined} getWorldDirection={undefined} traverse={undefined} traverseVisible={undefined} traverseAncestors={undefined} updateMatrix={undefined} updateMatrixWorld={undefined} updateWorldMatrix={undefined} toJSON={undefined} addEventListener={undefined} hasEventListener={undefined} removeEventListener={undefined} dispatchEvent={undefined} morphTargetInfluences={undefined} morphTargetDictionary={undefined} isMesh={undefined} updateMorphTargets={undefined} getVertexPosition={undefined} >
+                {devices.length} {warnings > 0 ? `(!${warnings})` : ''}
+              </Text>
+            )}
+            <motion.group
+              key={device_type}
+              whileHover={{ scale: isInGridMode ? 1 : 1.1 }}
+              onClick={(e) => {
+                e.stopPropagation()
+                setPreviewControls(device_type)
+              }}
+            >
+              {devices.map((device) => {
+                return (
+                  <DeviceModel
+                    variant={device.device_type || 'desktop'}
+                    key={device.ip}
+                    device={device}
+                    animate={{ position: positions[device.ip] }}
+                    materials={DESKTOP_MATERIALS}
+                    isWarning={(device.open_services || []).length > 0}
+                  />
+                )
+              })}
+            </motion.group>
+          </>
         )
       })}
-       <mesh scale={[150, 150, 3]} rotation={[Math.PI*0.75, Math.PI, 0]} position={[0, -4, 0]} >
-        <planeGeometry  />
-        
-        <meshBasicMaterial attach="material" map={gridTexture}  transparent  />
-        
+      <mesh scale={[150, 150, 3]} rotation={[Math.PI * 0.75, Math.PI, 0]} position={[0, -4, 0]}>
+        <planeGeometry />
+
+        <meshBasicMaterial attach='material' map={gridTexture} transparent />
       </mesh>
     </motion.group>
   )

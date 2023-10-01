@@ -32,9 +32,7 @@ function reducer(state: StateProps, action: { type: string; payload: any }) {
 
 export const PreviewControlsStateContext = createContext<StateProps>({ ...initialState })
 export const PreviewControlsActionContext = createContext<{
-  setPreviewControls: (
-    value: DeviceType | null,
-  ) => void
+  setPreviewControls: (value: DeviceType | null) => void
   setPreview: (value: Device) => void
   setYScrollOffset: (value: number) => void
 } | null>(null)
@@ -46,9 +44,7 @@ interface PreviewControlsProviderProps {
 export function PreviewControlsProvider({ children }: PreviewControlsProviderProps) {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const setPreviewControls = (
-    value: DeviceType | null,
-  ) => dispatch({ type: SET_PREVIEW_CONTROLS, payload: value })
+  const setPreviewControls = (value: DeviceType | null) => dispatch({ type: SET_PREVIEW_CONTROLS, payload: value })
 
   const setPreview = (value: Device) => dispatch({ type: SET_IS_PREVIEW, payload: value })
 

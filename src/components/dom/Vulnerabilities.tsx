@@ -18,7 +18,8 @@ export default function Vulnerabilities() {
           className={
             (isGood ? 'bg-[#2ecc7166]' : 'bg-[#f9111466]') +
             ' fixed  text-gray-300 flex flex-col py-4 px-2 w-[400px] h-[512px] justify-between left-[10vw] gap-8 top-0 bottom-0 my-auto border-[#ff8888] border-[2px] rounded-xl backdrop-blur'
-          }>
+          }
+        >
           {isGood && (
             <h3 className='text-center font-bold text-2xl font-mono text-yellow-500 mt-12 tracking-widest drop-shadow-[0_3.5px_2.5px_rgba(0,0,0,0.8)]'>
               NO PROBLEMS FOUND
@@ -53,17 +54,20 @@ export default function Vulnerabilities() {
               className='bg-[#2ecc7166] p-4  rounded-xl backdrop-blur'
               onClick={() => {
                 setRemediation(true)
-              }}>
+              }}
+            >
               Remediation instructions
             </button>
           )}
           <div className='h-64' />
 
-          {remediation && <RemediationModal onClick={
-            () => {
-              setRemediation(false)
-            }
-          } />}
+          {remediation && (
+            <RemediationModal
+              onClick={() => {
+                setRemediation(false)
+              }}
+            />
+          )}
         </motion.div>
       )}
     </AnimatePresence>

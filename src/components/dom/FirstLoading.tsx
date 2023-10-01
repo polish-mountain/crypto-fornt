@@ -22,7 +22,8 @@ export default function FirstLoading() {
   return (
     <div className='fixed bg-black z-99999 w-[100vw] h-[100vh] grid place-items-center'>
       <section
-        className={`text-6xl p-8 textGradient bg-gradient-to-b animate-[glowingText_2s_ease-in-out_infinite_alternate] ${retro.className}`}>
+        className={`text-6xl p-8 textGradient bg-gradient-to-b animate-[glowingText_2s_ease-in-out_infinite_alternate] ${retro.className}`}
+      >
         <span>
           Loading
           <span ref={dots}>
