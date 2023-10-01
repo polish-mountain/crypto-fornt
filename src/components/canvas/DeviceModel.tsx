@@ -7,12 +7,14 @@ import * as THREE from 'three'
 import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
 import { cameraDefault } from '@/utils/global'
 import { Device, DeviceType, MaterialInput } from '@/utils/types'
+import { applyMaterials } from '@/utils/functions'
 
 type Props = {
   animate: { position: [number, number, number] }
   variant: DeviceType
   materials: MaterialInput[]
   device: Device
+  isWarning: boolean
 }
 
 const MODEL_SCALES = {
@@ -20,8 +22,8 @@ const MODEL_SCALES = {
   desktop: 1,
 }
 
-export function DeviceModel({ animate, variant, materials, device }: Props) {
-  const gltf = useSkinnedMeshClone(`/models/${variant}.glb`)
+export function DeviceModel({ animate, variant, materials, device, isWarning }: Props) {
+  const objectGltf = useSkinnedMeshClone(`/models/${variant}.glb`)
   const [isCameraAnimating, setIsCameraAnimating] = useState(false)
   const { previewControls, preview, yScrollOffset } = useContext(PreviewControlsStateContext)
   const { setPreviewControls, setPreview } = useContext(PreviewControlsActionContext)
@@ -29,23 +31,10 @@ export function DeviceModel({ animate, variant, materials, device }: Props) {
   const { ip } = device
   const isPreview = preview?.ip === ip
 
-  const ref = useRef<any>()
-  const {
-    position: [x, y, z],
-  } = animate
+  const objectRef = useRef<any>()
+  const { position: [x, y, z] } = animate
 
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.traverse((child) => {
-        if (child.isMesh) {
-          const material = materials.find(({ name }) => name === child.material.name)
-          if (material) {
-            child.material = material.material
-          }
-        }
-      })
-    }
-  }, [gltf])
+  useEffect(() => { applyMaterials(objectRef, materials) }, [objectGltf])
 
   useFrame(({ camera }) => {
     if (isCameraAnimating) {
@@ -94,6 +83,10 @@ export function DeviceModel({ animate, variant, materials, device }: Props) {
     z: isOpened ? 0.4 : animate.position[2],
   }
 
+  const exclamationMarkGltf = useSkinnedMeshClone("/models/exclamation_mark.glb")
+  const exclamationMarkRef = useRef<any>()
+  useEffect(() => applyMaterials(exclamationMarkRef, materials), [exclamationMarkGltf])
+
   return (
     <motion.group
       initial='closed'
@@ -102,8 +95,13 @@ export function DeviceModel({ animate, variant, materials, device }: Props) {
       onClick={handleGroupClick}
       variants={variants}>
       <motion.group scale={MODEL_SCALES[variant]}>
-        <motion.primitive ref={ref} object={gltf.scene} />
+        <motion.primitive ref={objectRef} object={objectGltf.scene} />
       </motion.group>
+      {
+        !isWarning ? null : <motion.group position={[-1, 2, 0.3]} scale={[0.8, 0.8, 0.1]}>
+          <motion.primitive ref={exclamationMarkRef} object={exclamationMarkGltf.scene} />
+        </motion.group>
+      }
     </motion.group>
   )
 }

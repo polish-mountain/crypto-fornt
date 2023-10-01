@@ -22,6 +22,10 @@ const DESKTOP_MATERIALS = [
     name: 'Display',
     material: new THREE.MeshBasicMaterial({ color: '#86efac' }),
   },
+  {
+    name: 'Material',
+    material: new THREE.MeshBasicMaterial({ color: '#ff0000' }),
+  },
 ]
 
 const CAMERA_SPEED = 0.08
@@ -120,6 +124,7 @@ export default function MainStage({ title, setLoaded }: Props) {
                   device={device}
                   animate={{ position: positions[device.ip] }}
                   materials={DESKTOP_MATERIALS}
+                  isWarning={true}
                 />
               )
             })}
