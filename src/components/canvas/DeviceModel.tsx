@@ -17,6 +17,11 @@ type Props = {
   isWarning: boolean
 }
 
+const Z_OFFSET_MAP = {
+  laptop: 0.1,
+  desktop: 0.4,
+  phone: 0.2,
+}
 const MODEL_SCALES = {
   laptop: 0.18,
   desktop: 1,
@@ -61,12 +66,14 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
     }
   }
 
+  const zOffset = Z_OFFSET_MAP[variant]
+
   const variants = {
     opened: {
       scale: isPreview ? 0.3 : 0.2,
       x,
       y,
-      z: isPreview ? 0.4 : z,
+      z: isPreview ? zOffset : z,
       transition: { duration: 2 },
     },
     closed: {
@@ -80,7 +87,7 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
 
   const hoverVariants = {
     scale: isOpened ? 0.3 : 0.1,
-    z: isOpened ? 0.4 : animate.position[2],
+    z: isOpened ? zOffset : animate.position[2],
   }
 
   const exclamationMarkGltf = useSkinnedMeshClone("/models/exclamation_mark.glb")
@@ -94,7 +101,7 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
       whileHover={hoverVariants}
       onClick={handleGroupClick}
       variants={variants}>
-      <motion.group scale={MODEL_SCALES[variant]}>
+      <motion.group scale={MODEL_SCALES[variant]} >
         <motion.primitive ref={objectRef} object={objectGltf.scene} />
       </motion.group>
       {
