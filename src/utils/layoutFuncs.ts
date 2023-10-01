@@ -16,6 +16,12 @@ const STEP_MAP = {
   phone: 0.8,
   tablet: 1
 }
+export const CENTER_MAP = {
+  laptop: [+BORDERS[0], 0],
+  desktop: [0, 0],
+  phone: [-BORDERS[0], 0],
+  tablet: [-BORDERS[0], 0],
+}
 
 export type LayoutFuncsProps = {
   deviceType: DeviceType
@@ -39,18 +45,9 @@ export function generateDeviceOnSphere(devices: Device[]): [number, number, numb
     const radius = 0.8
     const theta = rand1 * 2 * Math.PI
     const phi = Math.acos(2 * rand2 - 1)
-    let xOffset = 0
-    let yOffset = 0
-    if (['phone', 'tablet'].includes(device.device_type)) {
-      xOffset = -BORDERS[0]
-      yOffset = 0
-    }
-    if (device.device_type === 'laptop') {
-      xOffset = +BORDERS[0]
-      yOffset = 0
-    }
-    const x = radius * Math.cos(theta) * Math.sin(phi) + xOffset
-    const y = radius * Math.sin(theta) * Math.sin(phi) + yOffset
+    const center = CENTER_MAP[device.device_type]
+    const x = radius * Math.cos(theta) * Math.sin(phi) + center[0]
+    const y = radius * Math.sin(theta) * Math.sin(phi) + center[1]
     const z = radius * Math.cos(phi)
     return [x, y, z]
   })
