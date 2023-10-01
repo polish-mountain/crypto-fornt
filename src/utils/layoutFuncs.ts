@@ -27,6 +27,10 @@ export function generateDeviceOnSphere(devices: Device[]): [number, number, numb
       xOffset = -BORDERS[0]
       yOffset = 0
     }
+    if (device.device_type === 'laptop') {
+      xOffset = +BORDERS[0]
+      yOffset = 0
+    }
     const x = radius * Math.cos(theta) * Math.sin(phi) + xOffset
     const y = radius * Math.sin(theta) * Math.sin(phi) + yOffset
     const z = radius * Math.cos(phi)
