@@ -31,6 +31,10 @@ const DESKTOP_MATERIALS = [
     name: 'image-screen',
     material: new THREE.MeshBasicMaterial({ color: '#000000' }),
   },
+  // {
+  //   name: 'Router',
+  //   material: new THREE.MeshBasicMaterial({ color: '#44444' }),
+  // }
 ]
 
 const CAMERA_SPEED = 0.08
@@ -120,8 +124,8 @@ export default function MainStage({ title, setLoaded }: Props) {
         const warnings = devices.filter((device) => (device.open_services || []).length > 0).length
         return (<>
           {!isInGridMode && <Text
-              scale={0.8}
-              position={[center[0], 1.7, 0]}
+              scale={0.7}
+              position={[center[0], center[1] + 1.7, 0]}
               color="white" // default
               anchorX="center" // default
               anchorY="middle" // default

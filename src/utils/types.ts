@@ -1,4 +1,4 @@
-export type DeviceType = 'laptop' | 'desktop' | 'phone' | 'tablet'
+export type DeviceType = 'laptop' | 'desktop' | 'phone' | 'tablet' | 'router'
 
 export type Device = {
   ip: string

@@ -8,19 +8,22 @@ const Z_MAP = {
   laptop: -0.4,
   desktop: 0.8,
   phone: 0.4,
-  tablet: 0
+  tablet: 0,
+  router: 0,
 }
 const STEP_MAP = {
   laptop: 1.2,
   desktop: 1,
   phone: 0.8,
-  tablet: 1
+  tablet: 1,
+  router: 1,
 }
 export const CENTER_MAP = {
-  laptop: [+BORDERS[0], 0],
-  desktop: [0, 0],
-  phone: [-BORDERS[0], 0],
-  tablet: [-BORDERS[0], 0],
+  laptop: [+BORDERS[0]/2, +BORDERS[1]/2],
+  desktop: [-BORDERS[0]/2, +BORDERS[1]/2],
+  phone: [-BORDERS[0], -BORDERS[1]/2],
+  tablet: [0, -BORDERS[1]/2],
+  router: [+BORDERS[0], -BORDERS[1]/2],
 }
 
 export type LayoutFuncsProps = {

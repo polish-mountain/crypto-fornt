@@ -9,7 +9,7 @@ export async function getHosts(): Promise<Device[]> {
   const objs = await response.json()
   return objs.map(host => {
     if (host.device_type == '')
-      host.device_type = 'desktop'
+      host.device_type = 'router'
     host.device_type
     return host
   })
@@ -21,7 +21,7 @@ export function hostUpdateHook(): Device | null {
   if (lastMessage) {
     let obj = JSON.parse(lastMessage.data)
     if (obj.device_type == '')
-      obj.device_type = 'desktop'
+      obj.device_type = 'router'
     return obj
   }
 

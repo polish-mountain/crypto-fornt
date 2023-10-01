@@ -17,23 +17,40 @@ type Props = {
   isWarning: boolean
 }
 
+const CAM_POS_OFFSET_MAP = {
+  laptop: [0, 0.45, 1.5],
+  desktop: [0, 0.3, 1],
+  phone: [0, 0.3, 1],
+  tablet: [0, 0, 1.2],
+  router: [0, 0.3, 1.3],
+}
+const CAM_LOOK_AT_OFFSET_MAP = {
+  laptop: [0, 0.4, 0],
+  desktop: [0, 0.5, 0],
+  phone: [0, 0.5, 0],
+  tablet: [0, 0, 0],
+  router: [0, 0.3, 0],
+}
 const Z_OFFSET_MAP = {
-  laptop: 0.1,
+  laptop: 0.02,
   desktop: 1.0,
   phone: 0.2,
-  tablet: 0.2
+  tablet: 0.2,
+  router: 0.1,
 }
 const ROTATION_MAP = {
   laptop: [0, 0, 0],
   desktop: [0, 0, 0],
   phone: [0.8, 0, 0],
   tablet: [1.6, 0, 0],
+  router: [0, 0, 0],
 }
 const MODEL_SCALES = {
   laptop: 0.18,
   desktop: 1,
   phone: 6,
-  tablet: 0.2
+  tablet: 0.2,
+  router: 20,
 }
 
 export function DeviceModel({ animate, variant, materials, device, isWarning }: Props) {
@@ -53,8 +70,12 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
   useFrame(({ camera }) => {
     if (isCameraAnimating) {
       if (preview) {
-        camera.position.set(x, y + 0.3 + yScrollOffset, z + 1)
-        camera.lookAt(x, y + 0.5 + yScrollOffset, z)
+        const camPosOffset = CAM_POS_OFFSET_MAP[variant];
+        const camPos = [x + camPosOffset[0], y + camPosOffset[1] + yScrollOffset, z + camPosOffset[2]];
+        camera.position.set(...camPos)
+        const camLookAtOffset = CAM_LOOK_AT_OFFSET_MAP[variant];
+        const camLookAt = [x + camLookAtOffset[0], y + camLookAtOffset[1] + yScrollOffset, z + camLookAtOffset[2]];
+        camera.lookAt(...camLookAt)
       } else {
         const targetPosition = new THREE.Vector3(...cameraDefault)
         camera.position.lerp(targetPosition, 0.05)
