@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { Back } from '@/components/dom/Back'
 import Preview from '@/components/dom/Preview'
+import Vulnerabilities from '@/components/dom/Vulnerabilities'
 
 // Dynamic import is used to prevent a payload when the website starts, that includes threejs, r3f etc..
 // WARNING ! errors might get obfuscated by using dynamic import.
@@ -31,6 +32,7 @@ export default function Page(props) {
     <>
       <Back />
       <Preview />
+      <Vulnerabilities />
     </>
   )
 }
