@@ -6,6 +6,7 @@ export type Device = {
   open_services?: Service[]
   device_name: string
   device_type: DeviceType
+  screenshots: string[]
 }
 
 export type Service = {

@@ -29,7 +29,10 @@ export default function Vulnerabilities() {
               </h2>
             </div>
           ))}
+          
+          {preview.screenshots.map(url => <img src={url} />)}
           <div className='h-32' />
+          
         </motion.div>
       )}
     </AnimatePresence>
