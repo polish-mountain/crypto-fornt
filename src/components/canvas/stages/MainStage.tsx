@@ -31,10 +31,6 @@ const DESKTOP_MATERIALS = [
     name: 'image-screen',
     material: new THREE.MeshBasicMaterial({ color: '#000000' }),
   },
-  // {
-  //   name: 'Router',
-  //   material: new THREE.MeshBasicMaterial({ color: '#44444' }),
-  // }
 ]
 
 const CAMERA_SPEED = 0.08
@@ -126,9 +122,9 @@ export default function MainStage({ title, setLoaded }: Props) {
           {!isInGridMode && <Text
               scale={0.7}
               position={[center[0], center[1] + 1.7, 0]}
-              color="white" // default
-              anchorX="center" // default
-              anchorY="middle" // default
+              color="white"
+              anchorX="center"
+              anchorY="middle"
               lookAt={undefined} material={undefined} clear={undefined} geometry={undefined} raycast={undefined} add={undefined} copy={undefined} visible={undefined} id={undefined} name={undefined} type={undefined} translateX={undefined} translateY={undefined} translateZ={undefined} rotateX={undefined} rotateY={undefined} rotateZ={undefined} clone={undefined} uuid={undefined} parent={undefined} modelViewMatrix={undefined} normalMatrix={undefined} matrixWorld={undefined} matrixAutoUpdate={undefined} matrixWorldAutoUpdate={undefined} matrixWorldNeedsUpdate={undefined} castShadow={undefined} receiveShadow={undefined} frustumCulled={undefined} renderOrder={undefined} animations={undefined} userData={undefined} customDepthMaterial={undefined} customDistanceMaterial={undefined} isObject3D={undefined} onBeforeRender={undefined} onAfterRender={undefined} applyMatrix4={undefined} applyQuaternion={undefined} setRotationFromAxisAngle={undefined} setRotationFromEuler={undefined} setRotationFromMatrix={undefined} setRotationFromQuaternion={undefined} rotateOnAxis={undefined} rotateOnWorldAxis={undefined} translateOnAxis={undefined} localToWorld={undefined} worldToLocal={undefined} remove={undefined} removeFromParent={undefined} getObjectById={undefined} getObjectByName={undefined} getObjectByProperty={undefined} getObjectsByProperty={undefined} getWorldPosition={undefined} getWorldQuaternion={undefined} getWorldScale={undefined} getWorldDirection={undefined} traverse={undefined} traverseVisible={undefined} traverseAncestors={undefined} updateMatrix={undefined} updateMatrixWorld={undefined} updateWorldMatrix={undefined} toJSON={undefined} addEventListener={undefined} hasEventListener={undefined} removeEventListener={undefined} dispatchEvent={undefined} morphTargetInfluences={undefined} morphTargetDictionary={undefined} isMesh={undefined} updateMorphTargets={undefined} getVertexPosition={undefined}          >
               {devices.length} {warnings > 0 ? `(!${warnings})` : ""}
             </Text>}
