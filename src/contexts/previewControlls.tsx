@@ -1,25 +1,30 @@
-import { cameraDefault } from '@/utils/global'
+import { Device, DeviceType } from '@/utils/types'
 import React, { createContext, useReducer, useContext, ReactNode } from 'react'
 
 const SET_PREVIEW_CONTROLS = 'SET_PREVIEW_CONTROLS'
-const SET_CAMERA_POSITION = 'SET_CAMERA_POSITION'
+const SET_IS_PREVIEW = 'SET_IS_PREVIEW'
+const SET_Y_SCROLL_OFFSET = 'SET_Y_SCROLL_OFFSET'
 
 type StateProps = {
-  previewControls: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null
-  cameraPosition: [number, number, number]
+  previewControls: DeviceType | null
+  preview: Device | null
+  yScrollOffset: number
 }
 
 const initialState: StateProps = {
   previewControls: null,
-  cameraPosition: cameraDefault,
+  preview: null,
+  yScrollOffset: 0,
 }
 
 function reducer(state: StateProps, action: { type: string; payload: any }) {
   switch (action.type) {
     case SET_PREVIEW_CONTROLS:
       return { ...state, previewControls: action.payload }
-    case SET_CAMERA_POSITION:
-      return { ...state, cameraPosition: action.payload }
+    case SET_IS_PREVIEW:
+      return { ...state, preview: action.payload }
+    case SET_Y_SCROLL_OFFSET:
+      return { ...state, yScrollOffset: action.payload }
     default:
       throw new Error(`Unknown action: ${action.type}`)
   }
@@ -28,9 +33,10 @@ function reducer(state: StateProps, action: { type: string; payload: any }) {
 export const PreviewControlsStateContext = createContext<StateProps>({ ...initialState })
 export const PreviewControlsActionContext = createContext<{
   setPreviewControls: (
-    value: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null,
+    value: DeviceType | null,
   ) => void
-  setCameraPosition: (value: [number, number, number]) => void
+  setPreview: (value: Device) => void
+  setYScrollOffset: (value: number) => void
 } | null>(null)
 
 interface PreviewControlsProviderProps {
@@ -41,14 +47,16 @@ export function PreviewControlsProvider({ children }: PreviewControlsProviderPro
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const setPreviewControls = (
-    value: 'phone' | 'desktop' | 'laptop' | 'phonePreview' | 'desktopPreview' | 'laptopPreview' | null,
+    value: DeviceType | null,
   ) => dispatch({ type: SET_PREVIEW_CONTROLS, payload: value })
 
-  const setCameraPosition = (value: [number, number, number]) => dispatch({ type: SET_CAMERA_POSITION, payload: value })
+  const setPreview = (value: Device) => dispatch({ type: SET_IS_PREVIEW, payload: value })
+
+  const setYScrollOffset = (value: number) => dispatch({ type: SET_Y_SCROLL_OFFSET, payload: value })
 
   return (
     <PreviewControlsStateContext.Provider value={state}>
-      <PreviewControlsActionContext.Provider value={{ setPreviewControls, setCameraPosition }}>
+      <PreviewControlsActionContext.Provider value={{ setPreviewControls, setPreview, setYScrollOffset }}>
         {children}
       </PreviewControlsActionContext.Provider>
     </PreviewControlsStateContext.Provider>

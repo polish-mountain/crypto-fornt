@@ -4,20 +4,30 @@ import { useFrame, useLoader } from '@react-three/fiber'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion-3d'
 import * as THREE from 'three'
-import { PreviewControlsStateContext } from '@/contexts/previewControlls'
+import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
 import { cameraDefault } from '@/utils/global'
+import { Device, DeviceType, MaterialInput } from '@/utils/types'
 
 type Props = {
   animate: { position: [number, number, number] }
-  variant: 'desktop' | 'laptop' | 'phone'
+  variant: DeviceType
+  materials: MaterialInput[]
+  device: Device
 }
 
-export function DeviceModel({ animate, variant }: Props) {
-  const gltf = useSkinnedMeshClone('/models/desktop.glb')
+const MODEL_SCALES = {
+  laptop: 0.2,
+  desktop: 1,
+}
+
+export function DeviceModel({ animate, variant, materials, device }: Props) {
+  const gltf = useSkinnedMeshClone(`/models/${variant}.glb`)
   const [isCameraAnimating, setIsCameraAnimating] = useState(false)
-  const { previewControls } = useContext(PreviewControlsStateContext)
+  const { previewControls, preview, yScrollOffset } = useContext(PreviewControlsStateContext)
+  const { setPreviewControls, setPreview } = useContext(PreviewControlsActionContext)
   const isOpened = previewControls === variant
-  const isPreview = previewControls === variant + 'Preview'
+  const { ip } = device
+  const isPreview = preview?.ip === ip
 
   const ref = useRef<any>()
   const {
@@ -28,14 +38,9 @@ export function DeviceModel({ animate, variant }: Props) {
     if (ref.current) {
       ref.current.traverse((child) => {
         if (child.isMesh) {
-          switch (child.material.name) {
-            case 'Main_MAt':
-              child.material = new THREE.MeshNormalMaterial({ color: '#7F5AF0' })
-              break
-
-            case 'Display':
-              child.material = new THREE.MeshBasicMaterial({ color: '#86efac' })
-              break
+          const material = materials.find(({ name }) => name === child.material.name)
+          if (material) {
+            child.material = material.material
           }
         }
       })
@@ -44,14 +49,9 @@ export function DeviceModel({ animate, variant }: Props) {
 
   useFrame(({ camera }) => {
     if (isCameraAnimating) {
-      if (isPreview) {
-        const targetPosition = new THREE.Vector3(x, y, z)
-        camera.position.lerp(targetPosition, 0.05)
-        camera.lookAt(x, y, z)
-
-        if (camera.position.distanceTo(targetPosition) < 0.1) {
-          setIsCameraAnimating(false)
-        }
+      if (preview) {
+        camera.position.set(x, y + 0.3 + yScrollOffset, z + 1)
+        camera.lookAt(x, y + 0.5 + yScrollOffset, z)
       } else {
         const targetPosition = new THREE.Vector3(...cameraDefault)
         camera.position.lerp(targetPosition, 0.05)
@@ -64,16 +64,20 @@ export function DeviceModel({ animate, variant }: Props) {
     }
   })
 
-  const handleGroupClick = () => {
-    setIsCameraAnimating(true)
+  const handleGroupClick = (e) => {
+    if (previewControls === variant) {
+      setIsCameraAnimating(true)
+      setPreview(device)
+      e.stopPropagation()
+    }
   }
 
   const variants = {
     opened: {
-      scale: 0.2,
+      scale: isPreview ? 0.3 : 0.2,
       x,
       y,
-      z,
+      z: isPreview ? 0.4 : z,
       transition: { duration: 2 },
     },
     closed: {
@@ -95,8 +99,11 @@ export function DeviceModel({ animate, variant }: Props) {
       initial='closed'
       animate={isOpened ? 'opened' : 'closed'}
       whileHover={hoverVariants}
+      onClick={handleGroupClick}
       variants={variants}>
-      <motion.primitive ref={ref} object={gltf.scene} />
+      <motion.group scale={MODEL_SCALES[variant]}>
+        <motion.primitive ref={ref} object={gltf.scene} />
+      </motion.group>
     </motion.group>
   )
 }
