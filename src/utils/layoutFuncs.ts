@@ -3,8 +3,17 @@
 import { BORDERS } from './global'
 import { Device, DeviceObj, DeviceType } from './types'
 
-const DUPA_POINT: [number, number] = [-10, -10]
-const Z: number = 0
+const DUPA_POINT: [number, number, number] = [-10, -10, 0]
+const Z_MAP = {
+  laptop: -0.4,
+  desktop: 0.4,
+  phone: 0.4,
+}
+const STEP_MAP = {
+  laptop: 1.4,
+  desktop: 1,
+  phone: 0.8,
+}
 
 export type LayoutFuncsProps = {
   deviceType: DeviceType
@@ -93,13 +102,14 @@ export function transformPositionsToGrid(devices: Device[], { deviceType }: Layo
   console.log(devices)
   return devices.map((device) => {
     if (device.device_type === deviceType) {
-      const step = 1
+      const step = STEP_MAP[deviceType]
       const x = step * (i % 10)
       const y = step * Math.floor(i / 10)
+      const stepCenter = (10 * step - 10) / 2
       i++
-      return [x - BORDERS[0], y - BORDERS[1], Z]
+      return [x - BORDERS[0] - stepCenter, y - BORDERS[1], Z_MAP[deviceType]]
     } else {
-      return [...DUPA_POINT, Z]
+      return [...DUPA_POINT]
     }
   })
 }
