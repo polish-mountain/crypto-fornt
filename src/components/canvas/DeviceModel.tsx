@@ -43,14 +43,21 @@ const ROTATION_MAP = {
   desktop: [0, 0, 0],
   phone: [0.8, 0, 0],
   tablet: [1.6, 0, 0],
-  router: [0, 0, 0],
+  router: [0, -1.6, 0],
+}
+const POSITION_MAP = {
+  laptop: [0, 0, 0],
+  desktop: [0, 0, 0],
+  phone: [0, 0, 0],
+  tablet: [0, 0, 0],
+  router: [0, -2.9, 0],
 }
 const MODEL_SCALES = {
   laptop: 0.18,
   desktop: 1,
   phone: 6,
   tablet: 0.2,
-  router: 20,
+  router: 1.4,
 }
 
 export function DeviceModel({ animate, variant, materials, device, isWarning }: Props) {
@@ -131,7 +138,7 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
       whileHover={hoverVariants}
       onClick={handleGroupClick}
       variants={variants}>
-      <motion.group scale={MODEL_SCALES[variant]} rotation={ROTATION_MAP[variant]}>
+      <motion.group scale={MODEL_SCALES[variant]} rotation={ROTATION_MAP[variant]} position={POSITION_MAP[variant]}>
         <motion.primitive ref={objectRef} object={objectGltf.scene} />
       </motion.group>
       {

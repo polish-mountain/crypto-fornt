@@ -17,7 +17,7 @@ export default function Scene({ children, ...props }) {
       <directionalLight intensity={0.1} position={[0, 1, 0]} />
       {/*
       @ts-ignore */}
-      <ambientLight intensity={0.2} />
+      <ambientLight intensity={0.3} />
       {children}
       {/*
       add drei axis helper */}
