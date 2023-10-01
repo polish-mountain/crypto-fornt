@@ -14,6 +14,11 @@ type Props = {
   materials: MaterialInput[]
 }
 
+const MODEL_SCALES = {
+  laptop: 0.2,
+  desktop: 1,
+}
+
 export function DeviceModel({ animate, variant, materials }: Props) {
   const gltf = useSkinnedMeshClone(`/models/${variant}.glb`)
   const [isCameraAnimating, setIsCameraAnimating] = useState(false)
@@ -96,9 +101,10 @@ export function DeviceModel({ animate, variant, materials }: Props) {
       initial='closed'
       animate={isOpened ? 'opened' : 'closed'}
       whileHover={hoverVariants}
-      variants={variants}
-      onClick={handleGroupClick}>
-      <motion.primitive ref={ref} object={gltf.scene} />
+      variants={variants}>
+      <motion.group scale={MODEL_SCALES[variant]}>
+        <motion.primitive ref={ref} object={gltf.scene} />
+      </motion.group>
     </motion.group>
   )
 }
