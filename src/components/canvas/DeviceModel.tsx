@@ -4,7 +4,7 @@ import { useFrame, useLoader } from '@react-three/fiber'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion-3d'
 import * as THREE from 'three'
-import { PreviewControlsStateContext } from '@/contexts/previewControlls'
+import { PreviewControlsActionContext, PreviewControlsStateContext } from '@/contexts/previewControlls'
 import { cameraDefault } from '@/utils/global'
 import { MaterialInput } from '@/utils/types'
 
@@ -17,9 +17,9 @@ type Props = {
 export function DeviceModel({ animate, variant, materials }: Props) {
   const gltf = useSkinnedMeshClone(`/models/${variant}.glb`)
   const [isCameraAnimating, setIsCameraAnimating] = useState(false)
-  const { previewControls } = useContext(PreviewControlsStateContext)
+  const { previewControls, isPreview } = useContext(PreviewControlsStateContext)
+  const { setPreviewControls, setIsPreview } = useContext(PreviewControlsActionContext)
   const isOpened = previewControls === variant
-  const isPreview = previewControls === variant + 'Preview'
 
   const ref = useRef<any>()
   const {
@@ -42,7 +42,7 @@ export function DeviceModel({ animate, variant, materials }: Props) {
   useFrame(({ camera }) => {
     if (isCameraAnimating) {
       if (isPreview) {
-        const targetPosition = new THREE.Vector3(x, y, z)
+        const targetPosition = new THREE.Vector3(x, y, z + 1)
         camera.position.lerp(targetPosition, 0.05)
         camera.lookAt(x, y, z)
 
@@ -61,16 +61,20 @@ export function DeviceModel({ animate, variant, materials }: Props) {
     }
   })
 
-  const handleGroupClick = () => {
-    setIsCameraAnimating(true)
+  const handleGroupClick = (e) => {
+    if (previewControls === variant) {
+      setIsCameraAnimating(true)
+      setIsPreview(true)
+      e.stopPropagation()
+    }
   }
 
   const variants = {
     opened: {
-      scale: 0.2,
+      scale: isPreview ? 0.3 : 0.2,
       x,
       y,
-      z,
+      z: isPreview ? 0.4 : z,
       transition: { duration: 2 },
     },
     closed: {
@@ -92,7 +96,8 @@ export function DeviceModel({ animate, variant, materials }: Props) {
       initial='closed'
       animate={isOpened ? 'opened' : 'closed'}
       whileHover={hoverVariants}
-      variants={variants}>
+      variants={variants}
+      onClick={handleGroupClick}>
       <motion.primitive ref={ref} object={gltf.scene} />
     </motion.group>
   )

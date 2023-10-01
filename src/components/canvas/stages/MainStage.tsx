@@ -33,13 +33,17 @@ export default function MainStage({ title, setLoaded }: Props) {
   let { mouseX, mouseY } = useMouse()
 
   const [hosts, setHosts] = useState<Device[]>([])
-  const clickedDevice = useContext(PreviewControlsStateContext)
-  const previewControlsActionContext = useContext(PreviewControlsActionContext)
-  const isDesktopsClicked = clickedDevice.previewControls === 'desktop'
+  const { previewControls } = useContext(PreviewControlsStateContext)
+  const { setPreviewControls } = useContext(PreviewControlsActionContext)
+  const isDesktopsClicked = previewControls === 'desktop'
 
   // const [layoutFunc, setLayoutFunc] = useState<(devices: DeviceObj[]) => DeviceObj[]>(generateDeviceOnSphere)
 
   const layoutFunc = isDesktopsClicked ? transformPositionsToGrid : generateDeviceOnSphere
+
+  useEffect(() => {
+    console.log(previewControls)
+  }, [previewControls])
 
   useEffect(() => {
     setLoaded()
@@ -86,7 +90,8 @@ export default function MainStage({ title, setLoaded }: Props) {
       whileHover={{ scale: isDesktopsClicked ? 1 : 1.1 }}
       onClick={(e) => {
         e.stopPropagation()
-        previewControlsActionContext.setPreviewControls('desktop')
+        console.log('clicked out')
+        setPreviewControls('desktop')
       }}>
       {hosts.map((device, idx) => (
         <DeviceModel variant='desktop' key={idx} animate={{ position: positions[idx] }} materials={DESKTOP_MATERIALS} />

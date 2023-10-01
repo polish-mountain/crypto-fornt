@@ -17,7 +17,6 @@ export function generateDeviceOnSphere(devices: Device[]): [number, number, numb
     // Obtain sequential random numbers like so:
     const rand1 = rand()
     const rand2 = rand()
-    console.log('dupa: ', rand1, rand2)
 
     const radius = 0.8
     const theta = rand1 * 2 * Math.PI
