@@ -22,9 +22,17 @@ const Z_OFFSET_MAP = {
   desktop: 0.4,
   phone: 0.2,
 }
+const ROTATION_MAP = {
+  laptop: [0, 0, 0],
+  desktop: [0, 0, 0],
+  phone: [0.8, 0, 0],
+  tablet: [1.6, 0, 0],
+}
 const MODEL_SCALES = {
   laptop: 0.18,
   desktop: 1,
+  phone: 6,
+  tablet: 0.2
 }
 
 export function DeviceModel({ animate, variant, materials, device, isWarning }: Props) {
@@ -101,7 +109,7 @@ export function DeviceModel({ animate, variant, materials, device, isWarning }: 
       whileHover={hoverVariants}
       onClick={handleGroupClick}
       variants={variants}>
-      <motion.group scale={MODEL_SCALES[variant]} >
+      <motion.group scale={MODEL_SCALES[variant]} rotation={ROTATION_MAP[variant]}>
         <motion.primitive ref={objectRef} object={objectGltf.scene} />
       </motion.group>
       {

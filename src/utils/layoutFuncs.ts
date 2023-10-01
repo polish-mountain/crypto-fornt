@@ -39,7 +39,7 @@ export function generateDeviceOnSphere(devices: Device[]): [number, number, numb
     const phi = Math.acos(2 * rand2 - 1)
     let xOffset = 0
     let yOffset = 0
-    if (device.device_type === 'phone') {
+    if (['phone', 'tablet'].includes(device.device_type)) {
       xOffset = -BORDERS[0]
       yOffset = 0
     }
