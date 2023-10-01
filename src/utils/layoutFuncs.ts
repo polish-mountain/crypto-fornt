@@ -8,11 +8,13 @@ const Z_MAP = {
   laptop: -0.4,
   desktop: 0.8,
   phone: 0.4,
+  tablet: 0
 }
 const STEP_MAP = {
   laptop: 1.2,
   desktop: 1,
   phone: 0.8,
+  tablet: 1
 }
 
 export type LayoutFuncsProps = {
