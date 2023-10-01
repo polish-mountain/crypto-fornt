@@ -6,7 +6,7 @@ import { Device, DeviceObj, DeviceType } from './types'
 const DUPA_POINT: [number, number, number] = [-10, -10, 0]
 const Z_MAP = {
   laptop: -0.4,
-  desktop: 0.4,
+  desktop: 0.8,
   phone: 0.4,
 }
 const STEP_MAP = {
