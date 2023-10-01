@@ -124,7 +124,7 @@ export default function MainStage({ title, setLoaded }: Props) {
                   device={device}
                   animate={{ position: positions[device.ip] }}
                   materials={DESKTOP_MATERIALS}
-                  isWarning={true}
+                  isWarning={(device.open_services || []).length > 0}
                 />
               )
             })}
