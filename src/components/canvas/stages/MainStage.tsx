@@ -10,6 +10,7 @@ import { DeviceModel } from '../DeviceModel'
 
 import { getHosts, hostUpdateHook } from '@/utils/api'
 import { generateDeviceOnSphere, transformPositionsToGrid } from '@/utils/layoutFuncs'
+import { useScroll } from '@react-three/drei'
 
 const DESKTOP_MATERIALS = [
   {
@@ -35,11 +36,30 @@ export default function MainStage({ title, setLoaded }: Props) {
   const [hosts, setHosts] = useState<Device[]>([])
   const { previewControls } = useContext(PreviewControlsStateContext)
   const { setPreviewControls } = useContext(PreviewControlsActionContext)
-  const isDesktopsClicked = previewControls === 'desktop'
+
+  const clickedDevice = useContext(PreviewControlsStateContext)
+
+  const isInGridMode = clickedDevice.previewControls === 'desktop'
+
+  const [yScrollOffset, setYScrollOffset] = useState(0)
 
   // const [layoutFunc, setLayoutFunc] = useState<(devices: DeviceObj[]) => DeviceObj[]>(generateDeviceOnSphere)
 
-  const layoutFunc = isDesktopsClicked ? transformPositionsToGrid : generateDeviceOnSphere
+  const layoutFunc = isInGridMode ? transformPositionsToGrid : generateDeviceOnSphere
+
+  //scroll
+  useEffect(() => {
+    function scrollListener(ev: WheelEvent) {
+      if (isInGridMode) setYScrollOffset(yScrollOffset + ev.deltaY * 0.004)
+    }
+    document.body.addEventListener('wheel', scrollListener)
+    return () => document.body.removeEventListener('wheel', scrollListener)
+  }, [yScrollOffset, isInGridMode])
+
+  // reset scroll when grid mode is toggled
+  useEffect(() => {
+    setYScrollOffset(0)
+  }, [isInGridMode])
 
   useEffect(() => {
     console.log(previewControls)
@@ -86,21 +106,23 @@ export default function MainStage({ title, setLoaded }: Props) {
   })
 
   return (
-    <motion.group
-      whileHover={{ scale: isDesktopsClicked ? 1 : 1.1 }}
-      onClick={(e) => {
-        e.stopPropagation()
-        console.log('clicked out')
-        setPreviewControls('desktop')
-      }}>
-      {hosts.map((device, idx) => (
-        <DeviceModel
-          variant={device.device_type || 'desktop'}
-          key={idx}
-          animate={{ position: positions[idx] }}
-          materials={DESKTOP_MATERIALS}
-        />
-      ))}
+    <motion.group animate={{ y: yScrollOffset }} transition={{ duration: 0.5 }}>
+      <motion.group
+        whileHover={{ scale: isInGridMode ? 1 : 1.1 }}
+        onClick={(e) => {
+          e.stopPropagation()
+          console.log('clicked out')
+          setPreviewControls('desktop')
+        }}>
+        {hosts.map((device, idx) => (
+          <DeviceModel
+            variant={device.device_type || 'desktop'}
+            key={idx}
+            animate={{ position: positions[idx] }}
+            materials={DESKTOP_MATERIALS}
+          />
+        ))}
+      </motion.group>
     </motion.group>
   )
 }
